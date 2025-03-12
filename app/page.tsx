@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
+import Link from "next/link";
 
 const ErrorText = () => <p className="text-red-500 text-lg">geolocation IS NOT available</p>;
 
@@ -55,6 +56,27 @@ export default function GeolocationPage() {
       <Head>
         <title>Geolocation API Sample</title>
       </Head>
+
+      <header>
+        <ul className="flex gap-4 mt-4">
+          <li>
+            <Link legacyBehavior href="/">
+              <a className="text-gray-700 hover:underline">Home</a>
+            </Link>
+          </li>
+          <li>
+            <Link legacyBehavior href="/arrow">
+              <a className="text-gray-700 hover:underline">Arrow</a>
+            </Link>
+          </li>
+          <li>
+            <Link legacyBehavior href="/direction">
+              <a className="text-gray-700 hover:underline">Direction</a>
+            </Link>
+          </li>
+        </ul>
+      </header>
+
       <h2 className="text-2xl font-bold text-black mb-4">Geolocation API サンプル</h2>
       {!isAvailable && <ErrorText />}
       {isAvailable && (
