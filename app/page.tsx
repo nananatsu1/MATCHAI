@@ -18,22 +18,25 @@ export default function GeolocationPage() {
     }
   }, []);
 
-  const getCurrentPosition = () => {
-    if (typeof window !== "undefined" && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords;
-        setPosition({ latitude, longitude });
-      });
-    }
-  };
-
   const startWatchPosition = () => {
     if (typeof window !== "undefined" && navigator.geolocation) {
-      const watchId = navigator.geolocation.watchPosition(position => {
-        const { latitude, longitude } = position.coords;
-        setPosition({ latitude, longitude });
-      });
-
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      };
+  
+      const watchId = navigator.geolocation.watchPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          setPosition({ latitude, longitude });
+        },
+        error => {
+          console.error("Error watching position:", error);
+        },
+        options
+      );
+  
       setWatchStatus({ isWatching: true, watchId });
     }
   };
@@ -52,14 +55,12 @@ export default function GeolocationPage() {
       <Head>
         <title>Geolocation API Sample</title>
       </Head>
-      <h2 className="text-2xl font-bold mb-4">Geolocation API Sample</h2>
+      <h2 className="text-2xl font-bold text-black mb-4">Geolocation API サンプル</h2>
       {!isAvailable && <ErrorText />}
       {isAvailable && (
         <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
           <div className="flex flex-col gap-4">
-            <button onClick={getCurrentPosition} className="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition">
-              Get Current Position
-            </button>
+
             {watchStatus.isWatching ? (
               <button onClick={stopWatchPosition} className="px-4 py-2 bg-red-500 text-white rounded-md shadow hover:bg-red-600 transition">
                 Stop Watch Position
@@ -72,18 +73,12 @@ export default function GeolocationPage() {
           </div>
 
           <div className="mt-4">
-            <h3 className="text-lg font-semibold">Position</h3>
+            <h3 className="text-lg font-semibold text-black">位置</h3>
             <div className="text-gray-700">
-              latitude: {position.latitude}
+              緯度: {position.latitude}
               <br />
-              longitude: {position.longitude}
+              経度: {position.longitude}
             </div>
-          </div>
-
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold">Watch Mode</h3>
-            <p className="text-gray-700">Watch Status: {watchStatus.isWatching ? "Watching" : "Not Watching"}</p>
-            <p className="text-gray-700">Watch ID: {watchStatus.watchId}</p>
           </div>
         </div>
       )}
