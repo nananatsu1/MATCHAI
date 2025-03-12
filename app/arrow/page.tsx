@@ -26,10 +26,11 @@ const Arrow = () => {
           className="w-24 h-24 transform"
           style={{ transform: `rotate(${rotation}deg)` }}
         />
-        <p className="mt-4 text-xl">角度: {rotation.toFixed(2)}°</p>
+        <p className="mt-4 text-xl">角度: {rotation}°</p>
       </div>
     </div>
   );
 };
+
 
 export default Arrow;
