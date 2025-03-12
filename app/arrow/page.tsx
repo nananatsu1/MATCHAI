@@ -19,12 +19,15 @@ const Arrow = () => {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <img
-        src="/arrow.png"
-        alt="Arrow"
-        className="w-24 h-24 transform"
-        style={{ transform: `rotate(${rotation}deg)` }}
-      />
+      <div className="text-center">
+        <img
+          src="/arrow.png"
+          alt="Arrow"
+          className="w-24 h-24 transform"
+          style={{ transform: `rotate(${rotation}deg)` }}
+        />
+        <p className="mt-4 text-xl">角度: {rotation.toFixed(2)}°</p>
+      </div>
     </div>
   );
 };
