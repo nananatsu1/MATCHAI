@@ -94,12 +94,8 @@ export default function GeolocationWithDirection() {
   // コンパス（デバイスの向き）を取得
   useEffect(() => {
     const handleOrientation = (event: DeviceOrientationEvent) => {
-      if ((event as any).webkitCompassHeading !== undefined) {
-        // iOSデバイスの場合
-        setDeviceRotation((event as any).webkitCompassHeading);
-      } else if (event.alpha !== null) {
-        // その他のデバイスの場合
-        setDeviceRotation(360 - event.alpha); // 反時計回りのため360から引く
+      if (event.alpha !== null) {
+        setDeviceRotation(event.alpha);
       }
     };
 
