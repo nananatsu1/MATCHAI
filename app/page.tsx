@@ -74,6 +74,11 @@ export default function GeolocationPage() {
               <a className="text-gray-700 hover:underline">Direction</a>
             </Link>
           </li>
+          <li>
+            <Link legacyBehavior href="/room">
+              <a className="text-gray-700 hover:underline">Room</a>
+            </Link>
+          </li>
         </ul>
       </header>
 

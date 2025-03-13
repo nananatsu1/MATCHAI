@@ -26,8 +26,8 @@ const GyroCompass = () => {
     const orientation = (event: DeviceOrientationEvent) => {
         let degrees: number;
 
-        if (os === "iphone" && (event as any).webkitCompassHeading !== undefined) {
-            degrees = (event as any).webkitCompassHeading;
+        if (os === "iphone" && event.webkitCompassHeading !== undefined) {
+            degrees = event.webkitCompassHeading;
         } else {
             degrees = compassHeading(event.alpha!, event.beta!, event.gamma!);
         }
@@ -82,6 +82,9 @@ const GyroCompass = () => {
 
     return (
         <div>
+            <button onClick={() => DeviceOrientationEvent.requestPermission().then(() => console.log("許可"))}>
+                SafariでDeviceOrientationを許可
+            </button>
             <ul>
                 <li>【方角】<span>{direction}</span></li>
                 <li>【absolute】<span>{absolute}</span></li>
