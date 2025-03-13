@@ -6,15 +6,15 @@ import { getDatabase } from "firebase/database";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDAyIyTPSiYw_JvlIz9MG7TRqcUZ50RV5g",
-  authDomain: "herenow-d005d.firebaseapp.com",
-  projectId: "herenow-d005d",
-  storageBucket: "herenow-d005d.firebasestorage.app",
-  messagingSenderId: "408613288410",
-  appId: "1:408613288410:web:2456701f76365831b7e8e3",
-  measurementId: "G-95013JRP3D"
-};
-
+    apiKey: "AIzaSyBU3Rq5vArOca0ppzK3stoZ_sdNIcPEKgA",
+    authDomain: "herenow-8d697.firebaseapp.com",
+    databaseURL: "https://herenow-8d697-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "herenow-8d697",
+    storageBucket: "herenow-8d697.firebasestorage.app",
+    messagingSenderId: "341807883129",
+    appId: "1:341807883129:web:f5b2bc741bf8f57f1fc5a8",
+    measurementId: "G-RWFDTY3R31"
+  };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);

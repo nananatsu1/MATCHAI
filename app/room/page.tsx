@@ -1,7 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ref, set, onValue } from "firebase/database";
+import { v4 as uuidv4 } from "uuid"; // UUID 生成ライブラリ
 import db from "@/firebaseConfig";
+
+// ユーザーの UUID を取得（なければ新しく作る）
+const getUserId = () => {
+  let userId = localStorage.getItem("userId");
+  if (!userId) {
+    userId = uuidv4(); // UUID を生成
+    localStorage.setItem("userId", userId); // ローカルに保存
+  }
+  return userId;
+};
 
 const generateRoomId = () => Math.floor(1000 + Math.random() * 9000).toString();
 
@@ -10,6 +21,7 @@ export default function RoomPage() {
   const [inputRoomId, setInputRoomId] = useState("");
   const [position, setPosition] = useState<{ latitude: number | null; longitude: number | null }>({ latitude: null, longitude: null });
   const [users, setUsers] = useState<{ [key: string]: { latitude: number; longitude: number } }>({});
+  const userId = getUserId(); // ユーザーの ID を取得
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -18,7 +30,7 @@ export default function RoomPage() {
         setPosition({ latitude, longitude });
 
         if (roomId) {
-          set(ref(db, `rooms/${roomId}/users/${Date.now()}`), { latitude, longitude });
+          set(ref(db, `rooms/${roomId}/users/${userId}`), { latitude, longitude });
         }
       });
     }
@@ -32,8 +44,17 @@ export default function RoomPage() {
 
   const joinRoom = () => {
     setRoomId(inputRoomId);
+
     onValue(ref(db, `rooms/${inputRoomId}/users`), (snapshot) => {
-      setUsers(snapshot.val() || {});
+      const roomData = snapshot.val();
+
+      if (!roomData) {
+        alert("ルームは存在しません。");
+        setRoomId(null);
+        return;
+      }
+
+      setUsers(roomData);
     });
   };
 
