@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 
 import { useEffect, useState } from "react";
 
@@ -96,4 +96,4 @@ const GyroCompass = () => {
     );
 };
 
-export default GyroCompass;
+export default GyroCompass; */
