@@ -1,9 +1,9 @@
-/* "use client";
+"use client";
 
 import { useEffect, useState } from "react";
 
 const GyroCompass = () => {
-    const [os, setOs] = useState<string>("");
+    /*const [os, setOs] = useState<string>("");
     const [direction, setDirection] = useState<string>("");
     const [absolute, setAbsolute] = useState<string>("");
     const [alpha, setAlpha] = useState<string>("");
@@ -78,11 +78,11 @@ const GyroCompass = () => {
         if (/iPhone|iPad|iPod/.test(navigator.userAgent)) return "iphone";
         if (/Android/.test(navigator.userAgent)) return "android";
         return "pc";
-    };
+    }; */
 
     return (
         <div>
-            <button onClick={() => DeviceOrientationEvent.requestPermission().then(() => console.log("許可"))}>
+            {/* <button onClick={() => DeviceOrientationEvent.requestPermission().then(() => console.log("許可"))}>
                 SafariでDeviceOrientationを許可
             </button>
             <ul>
@@ -91,9 +91,10 @@ const GyroCompass = () => {
                 <li>【alpha】<span>{alpha}</span></li>
                 <li>【beta】<span>{beta}</span></li>
                 <li>【gamma】<span>{gamma}</span></li>
-            </ul>
+            </ul> */}
+            <p>compass</p>
         </div>
     );
 };
 
-export default GyroCompass; */
+export default GyroCompass;
