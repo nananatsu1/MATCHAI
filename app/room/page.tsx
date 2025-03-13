@@ -6,12 +6,15 @@ import db from "@/firebaseConfig";
 
 // ユーザーの UUID を取得（なければ新しく作る）
 const getUserId = () => {
-  let userId = localStorage.getItem("userId");
-  if (!userId) {
-    userId = uuidv4(); // UUID を生成
-    localStorage.setItem("userId", userId); // ローカルに保存
+  if (typeof window !== "undefined") { // クライアントサイドでのみ実行されるように確認
+    let userId = localStorage.getItem("userId");
+    if (!userId) {
+      userId = uuidv4(); // UUID を生成
+      localStorage.setItem("userId", userId); // ローカルに保存
+    }
+    return userId;
   }
-  return userId;
+  return ""; // サーバーサイドの場合は空文字を返す
 };
 
 const generateRoomId = () => Math.floor(1000 + Math.random() * 9000).toString();
@@ -21,10 +24,16 @@ export default function RoomPage() {
   const [inputRoomId, setInputRoomId] = useState("");
   const [position, setPosition] = useState<{ latitude: number | null; longitude: number | null }>({ latitude: null, longitude: null });
   const [users, setUsers] = useState<{ [key: string]: { latitude: number; longitude: number } }>({});
-  const userId = getUserId(); // ユーザーの ID を取得
+  const [userId, setUserId] = useState<string>("");
+
+  // クライアントサイドでユーザーIDを取得
+  useEffect(() => {
+    const userId = getUserId();
+    setUserId(userId); // ユーザーIDをstateにセット
+  }, []);
 
   useEffect(() => {
-    if ("geolocation" in navigator) {
+    if ("geolocation" in navigator && userId) {
       navigator.geolocation.watchPosition((pos) => {
         const { latitude, longitude } = pos.coords;
         setPosition({ latitude, longitude });
@@ -34,7 +43,7 @@ export default function RoomPage() {
         }
       });
     }
-  }, [roomId]);
+  }, [roomId, userId]); // userId も依存関係に追加
 
   const createRoom = () => {
     const newRoomId = generateRoomId();
