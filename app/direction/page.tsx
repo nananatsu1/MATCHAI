@@ -39,7 +39,15 @@ const getBearing = (lat1: number, lon1: number, lat2: number, lon2: number) => {
 
 export default function GeolocationWithDirection() {
   const [isAvailable, setAvailable] = useState(false);
-  const [position, setPosition] = useState<{ latitude: number | null; longitude: number | null }>({ latitude: null, longitude: null });
+  const [position, setPosition] = useState<{
+    latitude: number | null;
+    longitude: number | null;
+    altitude: number | null;  // 追加
+  }>({
+    latitude: null,
+    longitude: null,
+    altitude: null  // 追加
+  });
   const [distance, setDistance] = useState<number | null>(null);
   const [bearing, setBearing] = useState<number | null>(null);
   const [deviceRotation, setDeviceRotation] = useState<number>(0);
@@ -64,8 +72,8 @@ export default function GeolocationWithDirection() {
 
       const watchId = navigator.geolocation.watchPosition(
         pos => {
-          const { latitude, longitude } = pos.coords;
-          setPosition({ latitude, longitude });
+          const { latitude, longitude, altitude } = pos.coords;  // altitude を追加
+          setPosition({ latitude, longitude, altitude });  // altitude を追加
 
           if (latitude !== null && longitude !== null) {
             const d = getDistance(latitude, longitude, destination.latitude, destination.longitude);
@@ -158,6 +166,8 @@ export default function GeolocationWithDirection() {
               緯度: {position.latitude}
               <br />
               経度: {position.longitude}
+              <br />
+              高度: {position.altitude !== null ? `${position.altitude.toFixed(2)}m` : "取得不可"}
             </div>
           </div>
 

@@ -83,7 +83,6 @@ export default function RoomPage() {
         return;
       }
 
-      // パスワードが必要なくなったので、以下は削除されました
 
       // ゲストとして参加
       setUserRole("guest");
