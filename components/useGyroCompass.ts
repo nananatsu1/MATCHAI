@@ -8,7 +8,7 @@ interface DeviceOrientationEventWithCompass extends DeviceOrientationEvent {
     requestPermission?: () => Promise<string>;
 }
 
-const Compass = () => {
+const useGyroCompass = () => {
     const [rotation, setRotation] = useState(0);
     const [direction, setDirection] = useState("北");
     const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
@@ -62,6 +62,18 @@ const Compass = () => {
             const response = await fetch(
                 `https://www.ngdc.noaa.gov/geomag-web/calculators/calculateDeclination?lat1=${lat}&lon1=${lon}&resultFormat=json`
             );
+    
+            // レスポンスの Content-Type をチェック
+            const contentType = response.headers.get("content-type");
+            if (!response.ok) {
+                throw new Error(`HTTPエラー: ${response.status}`);
+            }
+            if (!contentType || !contentType.includes("application/json")) {
+                const text = await response.text();
+                console.error("予期しないレスポンス:", text);
+                throw new Error("JSONではなくHTMLが返されました");
+            }
+    
             const data = await response.json();
             setDeclination(data.declination || 0);
         } catch (error) {
@@ -112,4 +124,4 @@ const Compass = () => {
     return { rotation, direction, permissionGranted, requestPermission, error };
 };
 
-export default Compass;
+export default useGyroCompass;

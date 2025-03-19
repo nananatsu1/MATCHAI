@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import Compass from "./Compass"; // Compassコンポーネントをインポート
+import Compass from "./useGyroCompass"; // Compassコンポーネントをインポート
 
 const Arrow = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
