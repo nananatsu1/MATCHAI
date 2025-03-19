@@ -21,8 +21,8 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
     const canvas = canvasRef.current;
 
     const sizes = {
-      width: window.innerWidth / 3,
-      height: window.innerHeight / 3,
+      width: window.innerWidth / 2,
+      height: window.innerHeight / 2,
     };
 
     // Scene
@@ -78,12 +78,25 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
 
   useEffect(() => {
     if (!cameraRef.current) return;
-    // rotationをラジアンに変換
+
+    // 現在の角度と新しい角度の差を計算
+    const currentAngle = angle;
     const newAngle = rotation * (Math.PI / 180);
-    setAngle(newAngle);
+    let deltaAngle = newAngle - currentAngle;
+
+    // 最短の回転方向を選択
+    if (deltaAngle > Math.PI) {
+      deltaAngle -= 2 * Math.PI;
+    } else if (deltaAngle < -Math.PI) {
+      deltaAngle += 2 * Math.PI;
+    }
+
+    const updatedAngle = currentAngle + deltaAngle;
+    setAngle(updatedAngle);
+
     const camera = cameraRef.current;
-    camera.position.x = radius * Math.sin(newAngle);
-    camera.position.z = radius * Math.cos(newAngle);
+    camera.position.x = radius * Math.sin(updatedAngle);
+    camera.position.z = radius * Math.cos(updatedAngle);
     camera.position.y = 1;
     camera.lookAt(0, 0, 0);
   }, [rotation]); // rotationが更新されるたびにカメラを更新
