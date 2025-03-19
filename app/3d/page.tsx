@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Arrow from "@/components/Arrow";
-import useCompass from "@/components/useGyroCompass";
+import useCompass from "@/customhooks/useGyroCompass";
 
 const Page = () => {
   const { rotation, direction, permissionGranted, requestPermission, error } = useCompass();

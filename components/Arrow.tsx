@@ -10,8 +10,11 @@ interface ArrowProps {
 const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [angle, setAngle] = useState(0); // angleをstateとして管理
-  let model: THREE.Group;
-  let radius = Math.sqrt(5);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const modelRef = useRef<THREE.Group | null>(null);
+  const radius = Math.sqrt(5);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -24,11 +27,13 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
 
     // Scene
     const scene = new THREE.Scene();
+    sceneRef.current = scene;
 
     // Camera
     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
     camera.position.set(0, 1, 2);
     camera.lookAt(0, 0, 0);
+    cameraRef.current = camera;
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({
@@ -38,6 +43,7 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
     });
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(window.devicePixelRatio);
+    rendererRef.current = renderer;
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -49,29 +55,38 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
     // Load 3D model
     const gltfLoader = new GLTFLoader();
     gltfLoader.load("./models/arrow.gltf", (gltf) => {
-      model = gltf.scene;
+      const model = gltf.scene;
       model.scale.set(1, 1, 1);
       model.rotation.y = Math.PI / 2;
       model.position.set(-0.1, 0, 0.3);
       scene.add(model);
+      modelRef.current = model;
     });
 
     // Axes Helper
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
 
-    const tick = () => {
-      // rotationをラジアンに変換
-      setAngle(rotation * (Math.PI / 180));
-      camera.position.x = radius * Math.sin(angle);
-      camera.position.z = radius * Math.cos(angle);
-      camera.position.y = 1;
-      camera.lookAt(0, 0, 0);
-      renderer.render(scene, camera);
-      requestAnimationFrame(tick);
+    const animate = () => {
+      if (renderer && camera && scene) {
+        renderer.render(scene, camera);
+      }
+      requestAnimationFrame(animate);
     };
-    tick();
-  }, [rotation]); // rotationが更新されるたびに再レンダリング
+    animate();
+  }, []); // 初期化は一度だけ実行
+
+  useEffect(() => {
+    if (!cameraRef.current) return;
+    // rotationをラジアンに変換
+    const newAngle = rotation * (Math.PI / 180);
+    setAngle(newAngle);
+    const camera = cameraRef.current;
+    camera.position.x = radius * Math.sin(newAngle);
+    camera.position.z = radius * Math.cos(newAngle);
+    camera.position.y = 1;
+    camera.lookAt(0, 0, 0);
+  }, [rotation]); // rotationが更新されるたびにカメラを更新
 
   return <canvas ref={canvasRef} className="border-black bg-gray-300"></canvas>;
 };
