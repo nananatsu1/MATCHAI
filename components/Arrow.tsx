@@ -2,12 +2,14 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import Compass from "./useGyroCompass"; // Compassコンポーネントをインポート
 
-const Arrow = () => {
+interface ArrowProps {
+  rotation: number; // rotationをpropsとして受け取る
+}
+
+const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [angle, setAngle] = useState(0); // angleをstateとして管理
-  const { rotation } = Compass(); // Compassからrotationを取得
   let model: THREE.Group;
   let radius = Math.sqrt(5);
 
@@ -59,8 +61,8 @@ const Arrow = () => {
     scene.add(axesHelper);
 
     const tick = () => {
-      // angleをrotationに基づいて更新
-      setAngle(rotation * (Math.PI / 180)); // rotationをラジアンに変換
+      // rotationをラジアンに変換
+      setAngle(rotation * (Math.PI / 180));
       camera.position.x = radius * Math.sin(angle);
       camera.position.z = radius * Math.cos(angle);
       camera.position.y = 1;
@@ -69,11 +71,9 @@ const Arrow = () => {
       requestAnimationFrame(tick);
     };
     tick();
-  }, [rotation, angle]); // rotationが更新されるたびに再レンダリング
+  }, [rotation]); // rotationが更新されるたびに再レンダリング
 
-  return (
-      <canvas ref={canvasRef} className="border-black bg-gray-300"></canvas>
-  );
+  return <canvas ref={canvasRef} className="border-black bg-gray-300"></canvas>;
 };
 
 export default Arrow;

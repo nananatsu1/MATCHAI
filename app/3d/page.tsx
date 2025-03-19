@@ -23,7 +23,7 @@ const Page = () => {
         {error ? `エラー: ${error}` : `方角: ${direction} (${rotation}°)`}
       </div>
 
-      <Arrow />
+      <Arrow rotation={rotation}/>
     </div>
   );
 };
