@@ -9,7 +9,7 @@ interface ArrowProps {
 
 const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [angle, setAngle] = useState(0); // angleをstateとして管理
+  const [angle, setAngle] = useState(0);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -30,7 +30,12 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
     sceneRef.current = scene;
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      sizes.width / sizes.height,
+      0.1,
+      1000
+    );
     camera.position.set(0, 1, 2);
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
@@ -79,27 +84,20 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
   useEffect(() => {
     if (!cameraRef.current) return;
 
-    // 現在の角度と新しい角度の差を計算
-    const currentAngle = angle;
-    const newAngle = rotation * (Math.PI / 180);
-    let deltaAngle = newAngle - currentAngle;
+    // 変化量を計算
+    let delta = (rotation - angle * (180 / Math.PI) + 360) % 360;
+    if (delta > 180) delta -= 360; // 逆回転を防ぐ
 
-    // 最短の回転方向を選択
-    if (deltaAngle > Math.PI) {
-      deltaAngle -= 2 * Math.PI;
-    } else if (deltaAngle < -Math.PI) {
-      deltaAngle += 2 * Math.PI;
-    }
-
-    const updatedAngle = currentAngle + deltaAngle;
-    setAngle(updatedAngle);
+    // 累積角度を更新
+    const newAngle = angle + delta * (Math.PI / 180);
+    setAngle(newAngle);
 
     const camera = cameraRef.current;
-    camera.position.x = radius * Math.sin(updatedAngle);
-    camera.position.z = radius * Math.cos(updatedAngle);
+    camera.position.x = radius * Math.sin(newAngle);
+    camera.position.z = radius * Math.cos(newAngle);
     camera.position.y = 1;
     camera.lookAt(0, 0, 0);
-  }, [rotation]); // rotationが更新されるたびにカメラを更新
+  }, [rotation]);
 
   return <canvas ref={canvasRef} className="border-black bg-gray-300"></canvas>;
 };
