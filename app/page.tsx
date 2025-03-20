@@ -3,11 +3,12 @@
 import { addUser } from '@/utils/supabaseFunction';
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const Home = () => {
 
   const [name, setName] = useState<string>("");
+  const router = useRouter();
 
   /* const handleSubmit = async (e:any) => {
     e.preventDefault();
@@ -19,17 +20,11 @@ const Home = () => {
 
     const createRoom = () => {
       const newRoomId = generateRoomId();
-  
-      /* setRoomId(newRoomId);
-      setUserRole("host"); // ホストとして参加
-      alert(`ルームID: ${newRoomId}`);
-   */
-      // ルームを作成し、ホストの情報を保存
-      useRouter().push('/room')
+      router.push(`/${newRoomId}/host`);
     };
 
     const joinRoom = () => {
-      useRouter().push('/room')
+      router.push(`/room/client`)
     }
   
   useEffect(() => {
