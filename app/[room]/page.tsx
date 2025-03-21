@@ -1,6 +1,6 @@
 'use client'
 
-import useCalclation from "@/customhooks/useCalclate";
+import useCalclation from "@/customhooks/useCalclation";
 import Arrow from "@/components/Arrow";
 import { CheckRole } from "@/utils/supabaseFunction";
 import { useRouter } from "next/navigation";
@@ -10,9 +10,9 @@ import useGyroCompass from "@/customhooks/useGyroCompass";
 const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
   const router = useRouter();
-  const { distance, angle } = useCalclation(); 
+  const { distance = 0, angle = 0 } = useCalclation(); 
   const { rotation, permissionGranted, requestPermission } = useGyroCompass();
-  const [arrowRotation, setArrowRotation] = useState(0);
+  const [arrowRotation, setArrowRotation] = useState<number>(0);
   
   // 目的地の向きを計算
   useEffect(() => {
