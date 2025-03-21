@@ -101,6 +101,37 @@ export const updateLocation = async (latitude: number, longitude: number,altitud
     .eq("id", userid)
 };
 
+
+export const getMyLocation = async () => {
+  const userid = Cookies.get("id");
+  const data = await supabase
+    .from('user')
+    .select('latitude, longitude')
+    .eq("id", userid)
+    .single();
+
+  return data;
+};
+
+
+export const getHostLocation = async () => {
+  const userid = Cookies.get("id");
+  const mydata = await supabase
+    .from('user')
+    .select('room_pass')
+    .eq("id", userid)
+    .single();
+  const pass = mydata.data?.room_pass;
+  
+  const data = await supabase
+    .from('user')
+    .select('latitude, longitude')
+    .eq('room_pass', pass)  // room_passが一致するユーザーをフィルタリング
+    .eq('role', 'host')         // roleが"host"であるユーザーを対象
+    .single();  
+  return data;
+};
+
 export const ResetData = async () => {
   const userid = Cookies.get("id");
   await supabase

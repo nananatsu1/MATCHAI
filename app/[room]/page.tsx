@@ -12,6 +12,16 @@ const Room = () => {
   const router = useRouter();
   const { distance, angle } = useCalclation(); 
   const { rotation } = useGyroCompass();
+  const [arrowRotation, setArrowRotation] = useState(0);
+  
+  // 目的地の向きを計算
+  useEffect(() => {
+      if (angle !== null && rotation !== null) {
+          setArrowRotation((angle - rotation + 360) % 360);
+      }
+  }, [angle, rotation]);
+
+  //ユーザにロールを付与
   useEffect(() => {
       const checkUserRole = async () => {
       const role = await CheckRole();
@@ -20,6 +30,7 @@ const Room = () => {
       checkUserRole();
   }, []);
 
+  //ユーザのロールを監視
   useEffect(() => {
     if (userrole !== null && userrole !== 'host' && userrole !== 'client') {
       router.push(`/`);
@@ -38,7 +49,8 @@ const Room = () => {
     return (
       <div>
         client
-        <Arrow rotation={rotation}/>
+        <Arrow rotation={arrowRotation}/>
+          距離: {distance}
       </div>
     );
   }else{
