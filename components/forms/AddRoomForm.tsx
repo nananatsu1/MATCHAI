@@ -1,16 +1,17 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { addRoom } from "@/utils/supabaseFunction";
+import { addRoom, generateRoomId } from "@/utils/supabaseFunction";
 
 const AddRoomForm = () => {
   const router = useRouter();
 
-  const generateRoomId = () => Math.floor(1000 + Math.random() * 9000);
-
   const createRoom = async () => {
-    const newRoomId = generateRoomId();
+    const newRoomId = await generateRoomId();
     await addRoom(newRoomId);
-    router.push(`/${newRoomId}`);
+    
+    setTimeout(() => {
+      router.push(`/${newRoomId}`);
+    }, 0);
   };
 
   return (

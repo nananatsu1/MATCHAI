@@ -1,10 +1,12 @@
 'use client'
-import { findPassword, joinRoom } from '@/utils/supabaseFunction';
+import { findPassword, isRoomLocking, joinRoom } from '@/utils/supabaseFunction';
 import React, { useState } from 'react'
+import { useRouter } from "next/navigation";
 
 const JoinRoomForm = () => {
     const [password, setPassword] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -15,8 +17,16 @@ const JoinRoomForm = () => {
         setError(null);
     
         const existPassword = await findPassword(password);
+        console.log(existPassword);
         if(existPassword){
-          joinRoom(password);
+          if(await isRoomLocking(password)){
+            await joinRoom(password);
+            router.push(`/${password}`)
+          }else{
+            setError("そのルームにはカギがかかっています");
+            return;
+          }
+            
         }else{
           setError("そのルームは存在していません");
           return;
