@@ -1,0 +1,110 @@
+'use client'
+import { supabase } from "../utils/supabase";
+import Cookies from "js-cookie";
+
+export const getAllUsers = async () => {
+  const users = await supabase.from("user").select("*");
+
+  return users.data;
+};
+
+export const addUser = async (name: string) => {
+  const { data } = await supabase
+    .from("user")
+    .insert({ name: name })
+    .select()
+    .single();
+
+  return data.id;
+};
+
+export const addRoom = async (pass: number) => {
+  const userid = Cookies.get("id");
+  await supabase
+    .from("user")
+    .update({ room_pass: pass, role: "host" })
+    .eq("id", userid);
+
+  await supabase
+    .from("room")
+    .insert({pass: pass});
+};
+
+export const generateRoomId = async () => {
+  let roomid: number;
+  let data: any;
+  do{
+    roomid = Math.floor(1000 + Math.random() * 9000);
+    data = await supabase
+      .from("room")
+      .select("pass")
+      .eq("pass", roomid)
+      .single();
+  }while(!data)
+  await supabase
+    .from("room")
+    .insert({pass: roomid});
+  return roomid;
+};
+
+export const joinRoom = async (pass: number) => {
+  const userid = Cookies.get("id");
+  await supabase
+    .from("user")
+    .update({ room_pass: pass, role: "client" })
+    .eq("id", userid);
+};
+
+export const findPassword = async (password: number): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from("room")
+    .select("pass")
+    .eq("pass", password)
+    .maybeSingle();
+  if (error || !data) {
+    return false;
+  }
+  return true;
+};
+
+export const isRoomLocking = async (password: number): Promise<boolean> => {
+  const { data } = await supabase
+    .from("room")
+    .select("is_open")
+    .eq("pass", password)
+    .single(); // passが一致する1件のデータを取得
+
+  if (!data) {
+    return false;
+  }else{
+    return data.is_open;
+  }
+
+  
+};
+
+export const CheckRole = async () => {
+  const userid = Cookies.get("id");
+  const { data } = await supabase
+    .from("user")
+    .select("role")
+    .eq("id", userid)
+    .single();
+  return data?.role || null;
+};
+
+export const updateLocation = async (latitude: number, longitude: number,altitude: number) => {
+  const userid = Cookies.get("id");
+  await supabase
+    .from("user")
+    .update({ latitude: latitude, longitude: longitude, altitude: altitude})
+    .eq("id", userid)
+};
+
+export const ResetData = async () => {
+  const userid = Cookies.get("id");
+  await supabase
+    .from("user")
+    .update({ latitude: null, longitude: null, altitude: null, room_pass: null, role: null})
+    .eq("id", userid)
+};

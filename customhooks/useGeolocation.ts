@@ -23,8 +23,12 @@ const useGeolocation = () => {
         const failure = (error: GeolocationPositionError) => {
             setError(error.message);
         };
+        
+        const watcher = navigator.geolocation.watchPosition(success, failure);
 
-        navigator.geolocation.getCurrentPosition(success, failure);
+        return () => {
+            navigator.geolocation.clearWatch(watcher);
+        };
     }, []);
 
     return { latitude, longitude, altitude, error };
