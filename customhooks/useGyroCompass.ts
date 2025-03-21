@@ -59,21 +59,29 @@ const useGyroCompass = () => {
     // 磁気偏角（declination）を取得
     const getMagneticDeclination = async (lat: number, lon: number) => {
         try {
-            const response = await fetch(
-                `https://www.ngdc.noaa.gov/geomag-web/calculators/calculateDeclination?lat1=${lat}&lon1=${lon}&resultFormat=json`
-            );
-    
-            // レスポンスの Content-Type をチェック
-            const contentType = response.headers.get("content-type");
-            if (!response.ok) {
-                throw new Error(`HTTPエラー: ${response.status}`);
+            if (lat === null || lon === null) {
+                console.error("緯度または経度が無効です:", { lat, lon });
+                return;
             }
+
+            const url = `https://www.ngdc.noaa.gov/geomag-web/calculators/calculateDeclination?lat1=${lat}&lon1=${lon}&resultFormat=json`;
+            console.log("リクエストURL:", url); // デバッグ用
+
+            const response = await fetch(url);
+
+            // レスポンスのステータスコードを確認
+            if (!response.ok) {
+                console.error(`HTTPエラー: ${response.status}`, await response.text());
+                return;
+            }
+
+            const contentType = response.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) {
                 const text = await response.text();
                 console.error("予期しないレスポンス:", text);
                 throw new Error("JSONではなくHTMLが返されました");
             }
-    
+
             const data = await response.json();
             setDeclination(data.declination || 0);
         } catch (error) {
