@@ -3,24 +3,17 @@
 import { useState, useEffect } from "react";
 import useGeolocation from "./useGeolocation";
 import { getHostLocation, getMyLocation, updateLocation } from "@/utils/supabaseFunction";
+import { Geodesic } from 'geographiclib';
 
 const toRadians = (degrees: number) => degrees * (Math.PI / 180);
 const toDegrees = (radians: number) => radians * (180 / Math.PI);
 
-// 2点間の距離を計算（Haversineの公式）
+// 2点間の距離を計算
 const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-  const R = 6371e3; // 地球の半径（メートル）
-  const φ1 = toRadians(lat1);
-  const φ2 = toRadians(lat2);
-  const Δφ = toRadians(lat2 - lat1);
-  const Δλ = toRadians(lon2 - lon1);
+  const geod = Geodesic.WGS84;
 
-  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c; // 距離（メートル）
+  const result = geod.Inverse(lat1, lon1, lat2, lon2);
+  return result.s12; // 距離（メートル）
 };
 
 // 目的地の方角を計算
@@ -46,13 +39,13 @@ const useCalclation = () => {
     useEffect(() => {
       // 自分の位置情報が更新された時にデータベースから最新の位置情報を取得
       const getLatestLocation = async () => {
-        const myLatestLocation = await getMyLocation(); // データベースから位置情報を取得する関数
+        const myLatestLocation = await getMyLocation(); // データベースから自分の位置情報を取得
         if (myLatestLocation && myLatestLocation.data) {
           setMyLatitude(myLatestLocation.data.latitude);
           setMyLongitude(myLatestLocation.data.longitude);
         }
 
-        const hostLatestLocation = await getHostLocation(); // データベースから位置情報を取得する関数
+        const hostLatestLocation = await getHostLocation(); // データベースからホストの位置情報を取得
         if (hostLatestLocation && hostLatestLocation.data) {
           setHostLatitude(hostLatestLocation.data.latitude);
           setHostLongitude(hostLatestLocation.data.longitude);
