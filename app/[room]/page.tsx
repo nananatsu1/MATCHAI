@@ -11,7 +11,7 @@ const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
   const router = useRouter();
   const { distance, angle } = useCalclation(); 
-  const { rotation } = useGyroCompass();
+  const { rotation, permissionGranted, requestPermission } = useGyroCompass();
   const [arrowRotation, setArrowRotation] = useState(0);
   
   // 目的地の向きを計算
@@ -49,6 +49,16 @@ const Room = () => {
     return (
       <div>
         client
+
+        {!permissionGranted && (
+        <button
+          onClick={requestPermission}
+          className="px-4 py-2 bg-green-500 text-white rounded"
+        >
+          センサーの許可
+        </button>
+      )}
+
         <Arrow rotation={arrowRotation}/>
           距離: {distance}
       </div>
