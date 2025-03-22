@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const useGeolocation = () => {
-    const [latitude, setLatitude] = useState<number | null>(null);
-    const [longitude, setLongitude] = useState<number | null>(null);
-    const [altitude, setAltitude] = useState<number | null>(null);
-    const [error, setError] = useState<string | null>(null);    
+    const latitude = useRef<number | null>(null);
+    const longitude = useRef<number | null>(null);
+    const altitude = useRef<number | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [, setTrigger] = useState(0); // State to force re-render
 
     useEffect(() => {
         if (!("geolocation" in navigator)) {
@@ -15,15 +16,16 @@ const useGeolocation = () => {
         }
 
         const success = (position: GeolocationPosition) => {
-            setLatitude(position.coords.latitude);
-            setLongitude(position.coords.longitude);
-            setAltitude(position.coords.altitude);
+            latitude.current = position.coords.latitude;
+            longitude.current = position.coords.longitude;
+            altitude.current = position.coords.altitude;
+            setTrigger((prev) => prev + 1); // Trigger re-render
         };
 
         const failure = (error: GeolocationPositionError) => {
             setError(error.message);
         };
-        
+
         const watcher = navigator.geolocation.watchPosition(success, failure);
 
         return () => {
@@ -31,7 +33,7 @@ const useGeolocation = () => {
         };
     }, []);
 
-    return { latitude, longitude, altitude, error };
+    return { latitude: latitude.current, longitude: longitude.current, altitude: altitude.current, error };
 };
 
 export default useGeolocation;
