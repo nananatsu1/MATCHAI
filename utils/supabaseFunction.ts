@@ -1,4 +1,3 @@
-'use client'
 import { supabase } from "../utils/supabase";
 import Cookies from "js-cookie";
 
