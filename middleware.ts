@@ -16,9 +16,8 @@ export async function middleware(request: NextRequest) {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     }); // 有効期限30日
     return response;
-  }
-
-  // IDがない場合、新規ユーザーを作成
+  }else{
+    // IDがない場合、新規ユーザーを作成
   const userId = await addUser("Guest");
   console.log("Generated User ID:", userId);
 
@@ -34,6 +33,7 @@ export async function middleware(request: NextRequest) {
   }
 
   return NextResponse.redirect(new URL('/', request.url));
+  }
 }
 
 export const config = {
