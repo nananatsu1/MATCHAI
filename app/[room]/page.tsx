@@ -7,7 +7,7 @@ import { CheckRole } from "@/utils/supabaseFunction";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useGyroCompass from "@/customhooks/useGyroCompass";
-import { useGeolocation } from "@uidotdev/usehooks";
+import useGeolocation from "@/customhooks/useGeolocation";
 import ComfirmLocalStorage from "@/components/function/ComfirmLocalStorage";
 
 const Room = () => {
