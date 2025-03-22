@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useGyroCompass from "@/customhooks/useGyroCompass";
 import { useGeolocation } from "@uidotdev/usehooks";
+import ComfirmLocalStorage from "@/components/function/ComfirmLocalStorage";
 
 const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
@@ -36,7 +37,7 @@ const Room = () => {
 
   //ユーザのロールを監視
   useEffect(() => {
-    if (userrole !== null && userrole !== 'host' && userrole !== 'client') {
+    if (userrole !== null && userrole !== 'host' && userrole !== 'client' || localStorage.getItem("id") == null) {
       router.push(`/`);
       }
   }, [userrole, router]);
@@ -52,6 +53,7 @@ const Room = () => {
     // クライアント側の表示
     return (
       <div>
+
         client <br />
 
         {/* {!permissionGranted && (

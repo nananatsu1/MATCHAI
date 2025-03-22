@@ -18,7 +18,7 @@ export const addUser = async (name: string) => {
 };
 
 export const addRoom = async (pass: number) => {
-  const userid = Cookies.get("id");
+  const userid = localStorage.getItem("id")
   await supabase
     .from("user")
     .update({ room_pass: pass, role: "host" })
@@ -47,7 +47,7 @@ export const generateRoomId = async () => {
 };
 
 export const joinRoom = async (pass: number) => {
-  const userid = Cookies.get("id");
+  const userid = localStorage.getItem("id")
   await supabase
     .from("user")
     .update({ room_pass: pass, role: "client" })
@@ -83,7 +83,7 @@ export const isRoomLocking = async (password: number): Promise<boolean> => {
 };
 
 export const CheckRole = async () => {
-  const userid = Cookies.get("id");
+  const userid = localStorage.getItem("id")
   const { data } = await supabase
     .from("user")
     .select("role")
@@ -93,7 +93,7 @@ export const CheckRole = async () => {
 };
 
 export const updateLocation = async (latitude: number, longitude: number,altitude: number) => {
-  const userid = Cookies.get("id");
+  const userid = localStorage.getItem("id")
   await supabase
     .from("user")
     .update({ latitude: latitude, longitude: longitude, altitude: altitude})
@@ -102,7 +102,7 @@ export const updateLocation = async (latitude: number, longitude: number,altitud
 
 
 export const getMyLocation = async () => {
-  const userid = Cookies.get("id");
+  const userid = localStorage.getItem("id")
   const data = await supabase
     .from('user')
     .select('latitude, longitude')
@@ -114,7 +114,7 @@ export const getMyLocation = async () => {
 
 
 export const getHostLocation = async () => {
-  const userid = Cookies.get("id");
+  const userid = localStorage.getItem("id")
   const mydata = await supabase
     .from('user')
     .select('room_pass')
@@ -132,7 +132,7 @@ export const getHostLocation = async () => {
 };
 
 export const ResetData = async () => {
-  const userid = Cookies.get("id");
+  const userid = localStorage.getItem("id")
   await supabase
     .from("user")
     .update({ latitude: null, longitude: null, altitude: null, room_pass: null, role: null})

@@ -5,10 +5,11 @@ import { useEffect } from "react";
 const DataInitialize = () => {
 
   useEffect(() => {
-    const reset = async () => {
+    const resetData = async () => {
         await ResetData();
     };
-    reset();
+
+    resetData();
   }, []);
   return null;
 };
