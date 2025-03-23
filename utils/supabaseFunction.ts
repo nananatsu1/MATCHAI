@@ -1,9 +1,37 @@
 import { supabase } from "../utils/supabase";
 
-export const getAllUsers = async () => {
-  const users = await supabase.from("user").select("*");
+export const getAllClients = async () => {
+  const userid = localStorage.getItem("id");
 
-  return users.data;
+  const thisRoomPass = await supabase
+    .from("user")
+    .select("room_pass")
+    .eq("id", userid)
+    .single();
+
+  console.log(thisRoomPass);
+  const cliantsData = await supabase
+    .from("user")
+    .select("*")
+    .eq("room_pass", thisRoomPass.data?.room_pass)
+    .eq("role", "client");
+
+  return cliantsData.data;
+};
+
+export const getRealTimeClients = (callback: () => void) => {
+  const subscription = supabase
+    .channel("user_clients_changes")
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "user" },
+      () => {
+        callback();
+      }
+    )
+    .subscribe();
+
+  return subscription;
 };
 
 export const addUser = async (name: string) => {
@@ -170,6 +198,7 @@ export const ResetData = async () => {
       latitude: null,
       longitude: null,
       altitude: null,
+      distance: null,
       room_pass: null,
       role: null,
     })
