@@ -9,7 +9,6 @@ export const getAllClients = async () => {
     .eq("id", userid)
     .single();
 
-  console.log(thisRoomPass);
   const cliantsData = await supabase
     .from("user")
     .select("*")
@@ -48,7 +47,7 @@ export const addRoom = async (pass: number) => {
   const userid = localStorage.getItem("id");
   await supabase
     .from("user")
-    .update({ room_pass: pass, role: "host" })
+    .update({ room_pass: pass, role: "host", update_at: new Date() })
     .eq("id", userid);
 
   await supabase.from("room").insert({ pass: pass });
@@ -73,8 +72,13 @@ export const joinRoom = async (pass: number) => {
   const userid = localStorage.getItem("id");
   await supabase
     .from("user")
-    .update({ room_pass: pass, role: "client" })
+    .update({ room_pass: pass, role: "client", update_at: new Date() })
     .eq("id", userid);
+
+  await supabase
+    .from("room")
+    .update({update_at: new Date() })
+    .eq("pass", pass);
 };
 
 export const findPassword = async (password: number): Promise<boolean> => {
@@ -95,6 +99,11 @@ export const isRoomLocking = async (password: number): Promise<boolean> => {
     .select("is_open")
     .eq("pass", password)
     .single(); // passが一致する1件のデータを取得
+
+  await supabase
+    .from("room")
+    .update({update_at: new Date() })
+    .eq("pass", password);
 
   if (!data) {
     return false;
@@ -121,7 +130,7 @@ export const updateLocation = async (
   const userid = localStorage.getItem("id");
   await supabase
     .from("user")
-    .update({ latitude: latitude, longitude: longitude, altitude: altitude })
+    .update({ latitude: latitude, longitude: longitude, altitude: altitude, update_at: new Date() })
     .eq("id", userid);
 };
 
@@ -173,8 +182,18 @@ export const GetRealTimeLocations = (callback: () => void) => {
     .on(
       "postgres_changes",
       { event: "UPDATE", schema: "public", table: "user" },
-      () => {
-        callback();
+      (payload) => {
+        // 変更されたカラムをチェック
+        const updatedColumns = Object.keys(payload.new);
+        
+        // latitude, longitude, altitude のいずれかが更新された場合のみ callback を実行
+        if (
+          updatedColumns.includes("latitude") ||
+          updatedColumns.includes("longitude") ||
+          updatedColumns.includes("altitude")
+        ) {
+          callback();
+        }
       }
     )
     .subscribe();
@@ -186,7 +205,7 @@ export const setDistance = async (distance: number) => {
   const userid = localStorage.getItem("id");
   await supabase
     .from("user")
-    .update({ distance: distance })
+    .update({ distance: distance, update_at: new Date() })
     .eq("id", userid);
 };
 
@@ -201,6 +220,7 @@ export const ResetData = async () => {
       distance: null,
       room_pass: null,
       role: null,
+      update_at: new Date(),
     })
     .eq("id", userid);
 };

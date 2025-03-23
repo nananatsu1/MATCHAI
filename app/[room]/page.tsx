@@ -9,15 +9,7 @@ import {
   getRealTimeClients,
 } from "@/utils/supabaseFunction";
 import { useRouter } from "next/navigation";
-import {
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import useGyroCompass from "@/customhooks/useGyroCompass";
 import useGeolocation from "@/customhooks/useGeolocation";
 
@@ -94,8 +86,14 @@ const Room = () => {
           <ul>
             {clientsData.length > 0 ? (
               clientsData.map(
-                (client: { id: number | null; name: string | null; distance: number}) => (
-                  <li key={client.id}>{client.name} 距離: {client.distance}</li> // 各ユーザーの名前をリスト表示
+                (client: {
+                  id: number | null;
+                  name: string | null;
+                  distance: number;
+                }) => (
+                  <li key={client.id}>
+                    {client.name} 距離: {client.distance}
+                  </li> // 各ユーザーの名前をリスト表示
                 )
               )
             ) : (
@@ -120,7 +118,8 @@ const Room = () => {
         )}
         <Arrow rotation={arrowRotation} />
         距離: 約 {formatDistance(distance)} <br />
-        角度: {angle}<br />
+        角度: {angle}
+        <br />
       </div>
     );
   } else {
