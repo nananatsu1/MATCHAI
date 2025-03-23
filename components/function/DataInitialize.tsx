@@ -13,7 +13,7 @@ const DataInitialize = () => {
     };
 
     resetData();
-    stopWatching;
+    stopWatching();
   }, []);
   return null;
 };
