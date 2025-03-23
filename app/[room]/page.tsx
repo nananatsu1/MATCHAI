@@ -15,7 +15,7 @@ const Room = () => {
   const { distance = 0, angle = 0 } = useCalclation(); 
   const { latitude, longitude, startWatching } = useGeolocation();
 
-  /* const { rotation, permissionGranted, requestPermission } = useGyroCompass();
+  const { rotation, permissionGranted, requestPermission } = useGyroCompass();
   const [arrowRotation, setArrowRotation] = useState<number>(0);
   
   // 目的地の向きを計算
@@ -24,7 +24,7 @@ const Room = () => {
           setArrowRotation((angle - rotation + 360) % 360);
       }
   }, [angle, rotation]);
- */
+ 
   //ユーザにロールを付与
   useEffect(() => {
       const checkUserRole = async () => {
@@ -59,16 +59,16 @@ const Room = () => {
 
         client <br />
 
-        {/* {!permissionGranted && (
-        <button
-          onClick={requestPermission}
-          className="px-4 py-2 bg-green-500 text-white rounded"
-        >
-          センサーの許可
-        </button>
-      )}
+        {!permissionGranted && (
+          <button
+            onClick={requestPermission}
+            className="px-4 py-2 bg-green-500 text-white rounded"
+          >
+            センサーの許可
+          </button>
+        )}
 
-        <Arrow rotation={arrowRotation}/> */}
+        <Arrow rotation={arrowRotation}/> 
           距離: {distance} <br />
           緯度: {latitude} <br />
           経度: {longitude} <br />
