@@ -1,39 +1,59 @@
-"use client";
-
+'use client'
 import { useState, useEffect, useRef } from "react";
 
 const useGeolocation = () => {
-    const latitude = useRef<number | null>(null);
-    const longitude = useRef<number | null>(null);
-    const altitude = useRef<number | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [, setTrigger] = useState(0); // State to force re-render
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [altitude, setAltitude] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isWatching, setIsWatching] = useState(false);
 
-    useEffect(() => {
-        if (!("geolocation" in navigator)) {
-            setError("位置情報が取得できないブラウザのようです");
-            return;
-        }
+  const watchIdRef = useRef<number | null>(null);
 
-        const success = (position: GeolocationPosition) => {
-            latitude.current = position.coords.latitude;
-            longitude.current = position.coords.longitude;
-            altitude.current = position.coords.altitude;
-            setTrigger((prev) => prev + 1); // Trigger re-render
-        };
+  const startWatching = () => {
+    if (!("geolocation" in navigator)) {
+      setError("位置情報が取得できないブラウザのようです");
+      return;
+    }
 
-        const failure = (error: GeolocationPositionError) => {
-            setError(error.message);
-        };
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
 
-        const watcher = navigator.geolocation.watchPosition(success, failure);
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+        setAltitude(position.coords.altitude);
+      },
+      (error) => {
+        setError(error.message);
+      },
+      options
+    );
 
-        return () => {
-            navigator.geolocation.clearWatch(watcher);
-        };
-    }, []);
+    setIsWatching(true);
+  };
 
-    return { latitude: latitude.current, longitude: longitude.current, altitude: altitude.current, error };
+  const stopWatching = () => {
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+    }
+    setIsWatching(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, []);
+
+  return { latitude, longitude, altitude, error, isWatching, startWatching, stopWatching };
 };
 
 export default useGeolocation;

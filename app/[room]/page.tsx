@@ -8,13 +8,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useGyroCompass from "@/customhooks/useGyroCompass";
 import useGeolocation from "@/customhooks/useGeolocation";
-import ComfirmLocalStorage from "@/components/function/ComfirmLocalStorage";
 
 const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
   const router = useRouter();
   const { distance = 0, angle = 0 } = useCalclation(); 
-  const { latitude, longitude } = useGeolocation();
+  const { latitude, longitude, startWatching } = useGeolocation();
 
   /* const { rotation, permissionGranted, requestPermission } = useGyroCompass();
   const [arrowRotation, setArrowRotation] = useState<number>(0);
@@ -41,6 +40,10 @@ const Room = () => {
       router.push(`/`);
       }
   }, [userrole, router]);
+
+  useEffect(() => {
+    startWatching;
+  }, []);
 
   if (userrole === 'host') {
     // ホスト側の表示
