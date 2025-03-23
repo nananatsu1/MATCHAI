@@ -9,8 +9,6 @@ import { useRouter } from "next/navigation";
 
 const JoinRoomForm = () => {
   const [password, setPassword] = useState(["", "", "", ""]);
-  const [name, setName] = useState<string>("");
-  const [loading, setLoading] = useState(true);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -27,7 +25,6 @@ const JoinRoomForm = () => {
     setError(null);
 
     const existPassword = await findPassword(passwordNumber);
-    console.log(existPassword);
     if (existPassword) {
       if (await isRoomLocking(passwordNumber)) {
         await joinRoom(passwordNumber);
@@ -56,10 +53,7 @@ const JoinRoomForm = () => {
     }
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  
 
   return (
     <div>
