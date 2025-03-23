@@ -42,7 +42,7 @@ const Room = () => {
   }, [userrole, router]);
 
   useEffect(() => {
-    startWatching;
+    startWatching();
   }, []);
 
   if (userrole === 'host') {
