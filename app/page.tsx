@@ -9,14 +9,20 @@ const Home = () => {
     <div>
       <DataInitialize />
       <ComfirmLocalStorage />
-      <section className="text-center mb-2 text-2xl font-medium">
-        <h3 className="mb-4">Home</h3>
-        <div className="flex flex-col items-center gap-4">
-          <AddRoomForm />
+      <div className="w-full h-screen flex flex-col justify-center items-center" style={{ backgroundColor: "#f9f8f7" }}>
+        <div className="text-center">
+          <h3 className="text-gray-600 text-lg mb-4 font-nico" style={{ color: "#7d7d7d" ,fontFamily: 'NicoMoji'}}>パスワード</h3>
 
           <JoinRoomForm />
+          <div className="flex items-center gap-4 mb-4 w-64">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="text-gray-500 text-sm" style={{ fontFamily: 'NicoMoji' }}>または</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+          <AddRoomForm />
         </div>
-      </section>
+        
+      </div>
     </div>
   );
 };

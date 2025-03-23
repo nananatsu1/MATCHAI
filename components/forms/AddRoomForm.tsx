@@ -8,7 +8,7 @@ const AddRoomForm = () => {
   const createRoom = async () => {
     const newRoomId = await generateRoomId();
     await addRoom(newRoomId);
-    
+
     setTimeout(() => {
       router.push(`/${newRoomId}`);
     }, 0);
@@ -18,9 +18,14 @@ const AddRoomForm = () => {
     <div>
       <button
         onClick={createRoom}
-        className="shadow-md border-2 px-4 py-2 rounded-lg bg-green-200 text-black w-48"
+        className="w-30 py-2 #dee6ee bg-white"
+        style={{
+          boxShadow: "0 2px 2px #dee6ee",
+          color: " #7d7d7d",
+          fontFamily: "NicoMoji",
+        }}
       >
-        ルームを作る
+        ルームを作成
       </button>
     </div>
   );
