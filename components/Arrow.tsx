@@ -61,7 +61,7 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
     const gltfLoader = new GLTFLoader();
     gltfLoader.load("./models/arrow.gltf", (gltf) => {
       const model = gltf.scene;
-      model.scale.set(1, 1, 1);
+      model.scale.set(0.9, 0.9, 0.9);
       model.rotation.y = Math.PI / 2;
       model.position.set(-0.1, 0, 0.3);
       scene.add(model);
