@@ -21,8 +21,8 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
     const canvas = canvasRef.current;
 
     const sizes = {
-      width: window.innerWidth / 2,
-      height: window.innerHeight / 2,
+      width: window.innerWidth * 0.8,
+      height: window.innerWidth * 0.8,
     };
 
     // Scene

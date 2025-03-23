@@ -1,5 +1,4 @@
 import { supabase } from "../utils/supabase";
-import Cookies from "js-cookie";
 
 export const getAllUsers = async () => {
   const users = await supabase.from("user").select("*");
