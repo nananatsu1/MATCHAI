@@ -154,6 +154,14 @@ export const GetRealTimeLocations = (callback: () => void) => {
   return subscription;
 };
 
+export const setDistance = async (distance: number) => {
+  const userid = localStorage.getItem("id");
+  await supabase
+    .from("user")
+    .update({ distance: distance })
+    .eq("id", userid);
+};
+
 export const ResetData = async () => {
   const userid = localStorage.getItem("id");
   await supabase

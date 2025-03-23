@@ -13,7 +13,7 @@ const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
   const router = useRouter();
   const { distance = 0, angle = 0 } = useCalclation(); 
-  const { latitude, longitude, startWatching } = useGeolocation();
+  const { startWatching } = useGeolocation();
 
   const { rotation, permissionGranted, requestPermission } = useGyroCompass();
   const [arrowRotation, setArrowRotation] = useState<number>(0);
@@ -45,6 +45,14 @@ const Room = () => {
     startWatching();
   }, []);
 
+  // 距離を整形する関数
+  const formatDistance = (distance: number) => {
+    if (distance >= 1000) {
+      return `${(distance / 1000).toFixed(3)} km`; // 小数第三位まで表示
+    }
+    return `${Math.round(distance)} m`; // 小数点なしで表示
+  };
+
   if (userrole === 'host') {
     // ホスト側の表示
     return (
@@ -69,9 +77,7 @@ const Room = () => {
         )}
 
         <Arrow rotation={arrowRotation}/> 
-          距離: {distance} <br />
-          緯度: {latitude} <br />
-          経度: {longitude} <br />
+          距離: 約 {formatDistance(distance)} <br />
       </div>
     );
   }else{

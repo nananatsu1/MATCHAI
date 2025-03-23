@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchLocations, GetRealTimeLocations } from "@/utils/supabaseFunction";
+import { fetchLocations, GetRealTimeLocations, setDistance } from "@/utils/supabaseFunction";
 import { Geodesic } from "geographiclib";
 
 const toRadians = (degrees: number) => degrees * (Math.PI / 180);
@@ -69,7 +69,10 @@ const useCalclation = () => {
     myLatitude && myLongitude && hostLatitude !== null && hostLongitude !== null
       ? getDistance(myLatitude, myLongitude, hostLatitude, hostLongitude)
       : 0;
-
+  if(distance){
+    setDistance(distance);
+  }
+  
   const angle =
     myLatitude && myLongitude && hostLatitude !== null && hostLongitude !== null
       ? getAngle(myLatitude, myLongitude, hostLatitude, hostLongitude)
