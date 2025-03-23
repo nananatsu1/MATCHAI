@@ -1,4 +1,5 @@
-'use client'
+"use client";
+import { updateLocation } from "@/utils/supabaseFunction";
 import { useState, useEffect, useRef } from "react";
 
 const useGeolocation = () => {
@@ -53,7 +54,21 @@ const useGeolocation = () => {
     };
   }, []);
 
-  return { latitude, longitude, altitude, error, isWatching, startWatching, stopWatching };
+  useEffect(() => {
+    if (latitude !== null && longitude !== null && altitude !== null) {
+      updateLocation(latitude, longitude, altitude);
+    }
+  }, [latitude, longitude, altitude]);
+
+  return {
+    latitude,
+    longitude,
+    altitude,
+    error,
+    isWatching,
+    startWatching,
+    stopWatching,
+  };
 };
 
 export default useGeolocation;
