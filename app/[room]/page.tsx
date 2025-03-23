@@ -120,6 +120,7 @@ const Room = () => {
         )}
         <Arrow rotation={arrowRotation} />
         距離: 約 {formatDistance(distance)} <br />
+        角度: {angle}<br />
       </div>
     );
   } else {
