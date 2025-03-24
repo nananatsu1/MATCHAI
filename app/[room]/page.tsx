@@ -41,30 +41,62 @@ const Room = () => {
 
   //ユーザのロールを監視
   useEffect(() => {
-    if (
-      (userrole !== null && userrole !== "host" && userrole !== "client") ||
-      localStorage.getItem("id") == null
-    ) {
-      router.push(`/`);
-    }
+    let subscription: any;
+
+    const handleRedirect = async () => {
+      if (
+        (userrole !== null && userrole !== "host" && userrole !== "client") ||
+        localStorage.getItem("id") == null
+      ) {
+        if (subscription) {
+          subscription.unsubscribe(); // リダイレクト前に解除
+        }
+        router.push(`/`);
+      }
+    };
+
+    handleRedirect();
   }, [userrole, router]);
 
   useEffect(() => {
-    const initialize = async () => {
-      await startWatching();
-      const clientData = await getAllClients();
-      await setClientsData(clientData);
-      // Supabase Realtime の監視を開始
-      const subscription = getRealTimeClients(async () => {
-        const clientData = await getAllClients();
-        await setClientsData(clientData);
-      });
+    let subscription: any;
 
-      return () => {
-        subscription.unsubscribe();
-      };
+    const initialize = async () => {
+      try {
+        console.log("🚀 Initializing...");
+        await startWatching();
+
+        const clientData = await getAllClients();
+        if (clientData) {
+          setClientsData(clientData);
+        } else {
+          console.warn("⚠️ No client data found");
+        }
+
+        // Supabase Realtime の監視を開始
+        subscription = getRealTimeClients(() => {
+          console.log("🔄 Realtime update triggered");
+          const updateClients = async () => {
+            const updatedClientData = await getAllClients();
+            if (updatedClientData) {
+              setClientsData(updatedClientData);
+            }
+          };
+          updateClients();
+        });
+      } catch (error) {
+        console.error("🚨 Error in initialize:", error);
+      }
     };
+
     initialize();
+
+    return () => {
+      if (subscription) {
+        console.log("🛑 Unsubscribing from Realtime updates");
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   // 距離を整形する関数

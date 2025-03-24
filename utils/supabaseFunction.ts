@@ -3,20 +3,34 @@ import { supabase } from "../utils/supabase";
 export const getAllClients = async () => {
   const userid = localStorage.getItem("id");
 
-  const thisRoomPass = await supabase
+  // room_passを取得
+  const { data: thisRoomPass, error } = await supabase
     .from("user")
     .select("room_pass")
     .eq("id", userid)
     .single();
 
-  const cliantsData = await supabase
+  // エラー処理 & room_pass が null の場合の処理
+  if (error || !thisRoomPass?.room_pass) {
+    console.error("getAllClients Error: room_pass not found or null", error);
+    return [];
+  }
+
+  // クライアント情報を取得
+  const { data: cliantsData, error: clientError } = await supabase
     .from("user")
     .select("*")
-    .eq("room_pass", thisRoomPass.data?.room_pass)
+    .eq("room_pass", thisRoomPass.room_pass)
     .eq("role", "client");
 
-  return cliantsData.data;
+  if (clientError) {
+    console.error("getAllClients Error:", clientError);
+    return [];
+  }
+
+  return cliantsData;
 };
+
 
 export const getRealTimeClients = (callback: () => void) => {
   const subscription = supabase

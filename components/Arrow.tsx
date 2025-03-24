@@ -9,13 +9,12 @@ interface ArrowProps {
 
 const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [angle, setAngle] = useState(0);
   const lastRotationRef = useRef(rotation); // 前回のrotation値を保存
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const modelRef = useRef<THREE.Group | null>(null);
-  const radius = Math.sqrt(5);
+  const containerRef = useRef<THREE.Group | null>(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -58,6 +57,11 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
     scene.add(directionalLight);
 
+    // コンテナグループを作成（モデルを回転させるため）
+    const container = new THREE.Group();
+    scene.add(container);
+    containerRef.current = container;
+
     // Load 3D model
     const gltfLoader = new GLTFLoader();
     gltfLoader.load("./models/arrow.gltf", (gltf) => {
@@ -65,8 +69,13 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
       model.scale.set(0.9, 0.9, 0.9);
       model.rotation.y = Math.PI / 2;
       model.position.set(-0.1, 0, 0.3);
-      scene.add(model);
+      
+      // モデルをコンテナに追加
+      container.add(model);
       modelRef.current = model;
+      
+      // 初期回転を設定
+      updateModelRotation(rotation);
     });
 
     // Axes Helper
@@ -82,41 +91,39 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
     animate();
   }, []); // 初期化は一度だけ実行
 
+  // モデルの回転を更新する関数
+  const updateModelRotation = (newRotation: number) => {
+    if (!containerRef.current) return;
+
+    // 度数からラジアンに変換（Y軸周りの回転）
+    const rotationRad = (newRotation * Math.PI) / 180;
+    
+    // コンテナの回転を設定（Y軸周りに回転）
+    containerRef.current.rotation.y = -rotationRad; // マイナスをつけると時計回り
+  };
+
   useEffect(() => {
-    if (!cameraRef.current) return;
+    if (!containerRef.current) return;
 
     // 前回のrotation値と現在のrotation値を比較
     const lastRotation = lastRotationRef.current;
     
     // 角度の変化を検出（359度→0度の特殊なケースを処理）
-    let delta = 0;
+    let targetRotation = rotation;
     
     // 時計回りの大きな変化を検出（例：359度→0度）
     if (lastRotation > 270 && rotation < 90) {
-      delta = (rotation + 360) - lastRotation;
+      // スムーズな回転のために必要な処理を行う
+      targetRotation = rotation;
     } 
     // 反時計回りの大きな変化を検出（例：0度→359度）
     else if (rotation > 270 && lastRotation < 90) {
-      delta = rotation - (lastRotation + 360);
+      // スムーズな回転のために必要な処理を行う
+      targetRotation = rotation;
     } 
-    // 通常の変化
-    else {
-      delta = rotation - lastRotation;
-    }
     
-    // ラジアンに変換
-    const deltaRad = delta * (Math.PI / 180);
-    
-    // 累積角度を更新
-    setAngle(prevAngle => prevAngle + deltaRad);
-    
-    // カメラの位置を更新
-    const camera = cameraRef.current;
-    const newAngleRad = angle + deltaRad;
-    camera.position.x = radius * Math.sin(newAngleRad);
-    camera.position.z = radius * Math.cos(newAngleRad);
-    camera.position.y = 1;
-    camera.lookAt(0, 0, 0);
+    // モデルの回転を更新
+    updateModelRotation(targetRotation);
     
     // 今回のrotation値を保存
     lastRotationRef.current = rotation;
