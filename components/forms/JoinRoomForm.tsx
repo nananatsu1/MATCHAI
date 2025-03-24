@@ -76,6 +76,21 @@ const JoinRoomForm = () => {
             }}
             value={val}
             onChange={(e) => handleChange(index, e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace') {
+                e.preventDefault(); // デフォルト動作を防ぎ、手動で制御
+          
+                const newPassword = [...password];
+                newPassword[index] = ''; // 今の欄を消す
+                setPassword(newPassword);
+          
+                if (index > 0) {
+                  setTimeout(() => {
+                    inputRefs.current[index - 1]?.focus();
+                  }, 50); // 小さな遅延を加えて二重移動を防ぐ
+                }
+              }
+            }}
           />
         ))}
       </div>

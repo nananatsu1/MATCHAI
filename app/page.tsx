@@ -12,9 +12,29 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
+    let fontsReady = false;
+    let timeoutDone = false;
+  
+    const checkDone = () => {
+      if (fontsReady && timeoutDone) {
+        setLoading(false);
+      }
+    };
+  
+    // フォント読み込み待機
+    (document as any).fonts.ready.then(() => {
+      fontsReady = true;
+      checkDone();
+    });
+  
+    // 1秒の遅延
+    const timer = setTimeout(() => {
+      timeoutDone = true;
+      checkDone();
+    }, 1000);
+  
     return () => clearTimeout(timer);
-  }, []);
+  }, []); 
 
   return (
     <div>
