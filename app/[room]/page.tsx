@@ -53,7 +53,6 @@ const Room = () => {
     const initialize = async () => {
       await startWatching();
       const clientData = await getAllClients();
-      console.log(clientData);
       await setClientsData(clientData);
       // Supabase Realtime の監視を開始
       const subscription = getRealTimeClients(async () => {

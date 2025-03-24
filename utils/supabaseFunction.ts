@@ -55,18 +55,24 @@ export const addRoom = async (pass: number) => {
 
 export const generateRoomId = async () => {
   let roomid: number;
-  let data: any;
+  let existingRoom: any;
   do {
     roomid = Math.floor(1000 + Math.random() * 9000);
-    data = await supabase
+    existingRoom = await supabase
       .from("room")
       .select("pass")
       .eq("pass", roomid)
       .single();
-  } while (!data);
-  await supabase.from("room").insert({ pass: roomid });
+  } while (existingRoom.data); // 既に存在する場合は再生成
+
+  // 部屋を追加（競合を避けるためにUPSERTを使用）
+  await supabase
+    .from("room")
+    .upsert({ pass: roomid }, { onConflict: "pass" });
+
   return roomid;
 };
+
 
 export const joinRoom = async (pass: number) => {
   const userid = localStorage.getItem("id");

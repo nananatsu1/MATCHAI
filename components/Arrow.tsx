@@ -10,6 +10,7 @@ interface ArrowProps {
 const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [angle, setAngle] = useState(0);
+  const lastRotationRef = useRef(rotation); // 前回のrotation値を保存
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -84,19 +85,41 @@ const Arrow: React.FC<ArrowProps> = ({ rotation }) => {
   useEffect(() => {
     if (!cameraRef.current) return;
 
-    // 変化量を計算
-    let delta = (rotation - angle * (180 / Math.PI) + 360) % 360;
-    if (delta > 180) delta -= 360; // 逆回転を防ぐ
-
+    // 前回のrotation値と現在のrotation値を比較
+    const lastRotation = lastRotationRef.current;
+    
+    // 角度の変化を検出（359度→0度の特殊なケースを処理）
+    let delta = 0;
+    
+    // 時計回りの大きな変化を検出（例：359度→0度）
+    if (lastRotation > 270 && rotation < 90) {
+      delta = (rotation + 360) - lastRotation;
+    } 
+    // 反時計回りの大きな変化を検出（例：0度→359度）
+    else if (rotation > 270 && lastRotation < 90) {
+      delta = rotation - (lastRotation + 360);
+    } 
+    // 通常の変化
+    else {
+      delta = rotation - lastRotation;
+    }
+    
+    // ラジアンに変換
+    const deltaRad = delta * (Math.PI / 180);
+    
     // 累積角度を更新
-    const newAngle = angle + delta * (Math.PI / 180);
-    setAngle(newAngle);
-
+    setAngle(prevAngle => prevAngle + deltaRad);
+    
+    // カメラの位置を更新
     const camera = cameraRef.current;
-    camera.position.x = radius * Math.sin(newAngle);
-    camera.position.z = radius * Math.cos(newAngle);
+    const newAngleRad = angle + deltaRad;
+    camera.position.x = radius * Math.sin(newAngleRad);
+    camera.position.z = radius * Math.cos(newAngleRad);
     camera.position.y = 1;
     camera.lookAt(0, 0, 0);
+    
+    // 今回のrotation値を保存
+    lastRotationRef.current = rotation;
   }, [rotation]);
 
   return <canvas ref={canvasRef} className="border-black bg-gray-300"></canvas>;
