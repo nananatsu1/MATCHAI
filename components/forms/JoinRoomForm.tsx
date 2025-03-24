@@ -45,7 +45,7 @@ const JoinRoomForm = () => {
     const newPassword = [...password];
     newPassword[index] = value;
     setPassword(newPassword);
-  
+
     if (value !== "" && index < 3 && inputRefs.current[index + 1]) {
       setTimeout(() => {
         inputRefs.current[index + 1]?.focus();
@@ -53,57 +53,54 @@ const JoinRoomForm = () => {
     }
   };
 
-  
-
   return (
     <div>
       <form onSubmit={(e) => handleSubmit(e)}>
-      <div className="flex justify-center gap-4 mb-6">
-      
-        {password.map((val, index) => (
-          <input
-            key={index}
-            ref={(el) => {
-              inputRefs.current[index] = el;
-            }}
-            type="text"
-            maxLength={1}
-            className="w-12 h-15 border-2 rounded-lg text-center text-xl outline-none"
-            style={{
-              borderColor: borderColors[index],
-              color: " #7d7d7d",
-              fontFamily: "NicoMoji",
-            }}
-            value={val}
-            onChange={(e) => handleChange(index, e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Backspace') {
-                e.preventDefault(); // デフォルト動作を防ぎ、手動で制御
-          
-                const newPassword = [...password];
-                newPassword[index] = ''; // 今の欄を消す
-                setPassword(newPassword);
-          
-                if (index > 0) {
-                  setTimeout(() => {
-                    inputRefs.current[index - 1]?.focus();
-                  }, 50); // 小さな遅延を加えて二重移動を防ぐ
+        <div className="flex justify-center gap-4 mb-6">
+          {password.map((val, index) => (
+            <input
+              key={index}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
+              type="text" // そのまま
+              inputMode="numeric" // 数字キーボードを開く
+              pattern="[0-9]" // 数字のみ許可
+              maxLength={1}
+              className="w-12 h-15 border-2 rounded-lg text-center text-xl outline-none"
+              style={{
+                borderColor: borderColors[index],
+                color: "#7d7d7d",
+                fontFamily: "NicoMoji",
+              }}
+              value={val}
+              onChange={(e) => handleChange(index, e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Backspace") {
+                  e.preventDefault();
+                  const newPassword = [...password];
+                  newPassword[index] = "";
+                  setPassword(newPassword);
+                  if (index > 0) {
+                    setTimeout(() => {
+                      inputRefs.current[index - 1]?.focus();
+                    }, 50);
+                  }
                 }
-              }
-            }}
-          />
-        ))}
-      </div>
-      <button
-        className="w-30 py-2 mb-4 #7d7d7d  #dee6ee bg-white font-nico"
-        style={{
-          boxShadow: "0 2px 2px #dee6ee",
-          color: " #7d7d7d",
-          fontFamily: "NicoMoji",
-        }}
-      >
-        ルームに参加
-      </button>
+              }}
+            />
+          ))}
+        </div>
+        <button
+          className="w-30 py-2 mb-4 #7d7d7d  #dee6ee bg-white font-nico"
+          style={{
+            boxShadow: "0 2px 2px #dee6ee",
+            color: " #7d7d7d",
+            fontFamily: "NicoMoji",
+          }}
+        >
+          ルームに参加
+        </button>
       </form>
     </div>
   );
