@@ -2,33 +2,46 @@ import { supabase } from "../utils/supabase";
 
 export const getAllClients = async () => {
   const userid = localStorage.getItem("id");
-
-  // room_passを取得
-  const { data: thisRoomPass, error } = await supabase
+  const mydata = await supabase
     .from("user")
     .select("room_pass")
     .eq("id", userid)
     .single();
 
-  // エラー処理 & room_pass が null の場合の処理
-  if (error || !thisRoomPass?.room_pass) {
-    console.error("getAllClients Error: room_pass not found or null", error);
-    return [];
-  }
+  const pass = mydata.data?.room_pass;
 
   // クライアント情報を取得
-  const { data: cliantsData, error: clientError } = await supabase
+  const { data: clientsData, error: clientError } = await supabase
     .from("user")
     .select("*")
-    .eq("room_pass", thisRoomPass.room_pass)
+    .eq("room_pass", pass)
     .eq("role", "client");
 
   if (clientError) {
-    console.error("getAllClients Error:", clientError);
+    console.error("getAllClients Error: Failed to fetch clients", clientError);
     return [];
   }
 
-  return cliantsData;
+  return clientsData;
+};
+
+
+export const getRoomData = async() => {
+  const userid = localStorage.getItem("id");
+  const mydata = await supabase
+    .from("user")
+    .select("room_pass")
+    .eq("id", userid)
+    .single();
+
+  const pass = mydata.data?.room_pass;
+  
+  const roomData = await supabase
+    .from("room")
+    .select("pass, name")
+    .eq("pass", pass) // room_passが一致するユーザーをフィルタリング
+    .single();
+  return roomData.data;
 };
 
 
@@ -57,14 +70,15 @@ export const addUser = async (name: string) => {
   return data.id;
 };
 
-export const addRoom = async (pass: number) => {
+export const addRoom = async (pass: number, name: string) => {
   const userid = localStorage.getItem("id");
+
+  await supabase.from("room").insert({ pass: pass, name: name });
+
   await supabase
     .from("user")
     .update({ room_pass: pass, role: "host", update_at: new Date() })
     .eq("id", userid);
-
-  await supabase.from("room").insert({ pass: pass });
 };
 
 export const generateRoomId = async () => {
@@ -78,11 +92,6 @@ export const generateRoomId = async () => {
       .eq("pass", roomid)
       .single();
   } while (existingRoom.data); // 既に存在する場合は再生成
-
-  // 部屋を追加（競合を避けるためにUPSERTを使用）
-  await supabase
-    .from("room")
-    .upsert({ pass: roomid }, { onConflict: "pass" });
 
   return roomid;
 };
@@ -167,19 +176,29 @@ export const getMyLocation = async () => {
 
 export const getHostLocation = async () => {
   const userid = localStorage.getItem("id");
-  const mydata = await supabase
+  
+  // room_passを取得
+  const { data: mydata } = await supabase
     .from("user")
     .select("room_pass")
     .eq("id", userid)
     .single();
-  const pass = mydata.data?.room_pass;
 
-  const data = await supabase
+  const pass = mydata?.room_pass;
+
+  // room_passがnullまたはundefinedの場合、nullを返す
+  if (pass === null || pass === undefined) {
+    return null;
+  }
+
+  // room_passが一致するホストの位置情報を取得
+  const { data } = await supabase
     .from("user")
     .select("latitude, longitude")
     .eq("room_pass", pass) // room_passが一致するユーザーをフィルタリング
     .eq("role", "host") // roleが"host"であるユーザーを対象
     .single();
+  
   return data;
 };
 
@@ -191,8 +210,8 @@ export const fetchLocations = async () => {
   return {
     myLatitude: myLatestLocation?.data?.latitude || null,
     myLongitude: myLatestLocation?.data?.longitude || null,
-    hostLatitude: hostLatestLocation?.data?.latitude || null,
-    hostLongitude: hostLatestLocation?.data?.longitude || null,
+    hostLatitude: hostLatestLocation?.latitude || null,
+    hostLongitude: hostLatestLocation?.longitude || null,
   };
 };
 

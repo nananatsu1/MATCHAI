@@ -5,12 +5,12 @@ import { useState } from "react";
 
 const AddRoomForm = () => {
   const router = useRouter();
-  const [name, setName] = useState('ゲスト')
+  const [name, setName] = useState("新しい部屋")
   const [showModal, setShowModal] = useState(false)
 
   const createRoom = async () => {
     const newRoomId = await generateRoomId();
-    await addRoom(newRoomId);
+    await addRoom(newRoomId, name);
 
     setTimeout(() => {
       router.push(`/${newRoomId}`);
@@ -29,10 +29,10 @@ const AddRoomForm = () => {
     <div>
       <button
         onClick={openCreateModal}
-        className="w-30 py-2 #dee6ee bg-white"
+        className="w-30 py-2 bg-white text-gray-600"
         style={{
-          boxShadow: "0 2px 2px #dee6ee",
-          color: " #7d7d7d",
+          boxShadow: "2px 6px 3px #dee6ee",
+
           fontFamily: "NicoMoji",
         }}
       >
@@ -50,12 +50,12 @@ const AddRoomForm = () => {
             </button>
 
             <p className="text-center mb-4" style={{ fontFamily: 'NicoMoji', color: '#7d7d7d' }}>
-              ルームの名前を入力
+              ルーム名を入力
             </p>
 
             <input
               type="text"
-              value={name}
+              placeholder="新しい部屋"
               onChange={(e) => setName(e.target.value)}
               className="w-full mb-5 p-2 text-center bg-[#ddd] rounded"
               style={{ fontFamily: 'NicoMoji', color: '#7d7d7d' }}

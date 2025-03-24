@@ -92,14 +92,16 @@ const JoinRoomForm = () => {
           ))}
         </div>
         <button
-          className="w-30 py-2 mb-4 #7d7d7d  #dee6ee bg-white font-nico"
+          className="w-30 mx-auto block px-2 py-2 mb-4 bg-white"
           style={{
-            boxShadow: "0 2px 2px #dee6ee",
-            color: " #7d7d7d",
+            boxShadow: "2px 6px 3px #dee6ee",
             fontFamily: "NicoMoji",
           }}
         >
+          <p className="text-gray-600">
           ルームに参加
+          </p>
+          
         </button>
       </form>
     </div>
