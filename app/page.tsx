@@ -88,6 +88,26 @@ const Home = () => {
     }
   };
 
+  const openInfoModal = () => {
+    setShowInfoModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeInfoModal = () => {
+    setShowInfoModal(false);
+    document.body.style.overflow = 'auto';
+  };
+
+  const openUserModal = () => {
+    setShowUserModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeUserModal = () => {
+    setShowUserModal(false);
+    document.body.style.overflow = 'auto';
+  };
+
   return (
     <div>
       <DataInitialize />
@@ -115,7 +135,7 @@ const Home = () => {
             <motion.button
               whileTap={{ scale: 0.9 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              onClick={() => setShowUserModal(true)}
+              onClick={openUserModal}
               className="absolute top-4 left-5"
             >
               <Image
@@ -131,7 +151,7 @@ const Home = () => {
             <motion.button
               whileTap={{ scale: 0.8, rotate: 10 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              onClick={() => setShowInfoModal(true)}
+              onClick={openInfoModal}
               className="absolute top-5 right-5"
             >
               <IoIosInformationCircleOutline className="text-5xl text-gray-300" />
@@ -169,7 +189,7 @@ const Home = () => {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                onClick={() => setShowInfoModal(false)}
+                onClick={closeInfoModal}
                 className="absolute top-5 right-5"
               >
                 <RxCross1 className="text-gray-400 text-xl" />
@@ -225,7 +245,7 @@ const Home = () => {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                onClick={() => setShowUserModal(false)}
+                onClick={closeUserModal}
                 className="absolute top-5 right-5"
               >
                 <RxCross1 className="text-gray-400 text-xl" />

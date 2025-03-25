@@ -21,10 +21,12 @@ const AddRoomForm = () => {
 
   const openCreateModal = () => {
     setShowModal(true);
+    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setShowModal(false);
+    document.body.style.overflow = 'auto';
   };
 
   return (

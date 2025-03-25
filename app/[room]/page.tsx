@@ -160,10 +160,12 @@ const Room = () => {
 
   const openConfigModal = () => {
     setConfigModal(true);
+    document.body.style.overflow = 'hidden';
   };
 
   const closeConfigModal = () => {
     setConfigModal(false);
+    document.body.style.overflow = 'auto';
   };
 
   const copyToClipboard = async () => {
