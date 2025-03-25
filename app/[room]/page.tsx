@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import useGyroCompass from "@/customhooks/useGyroCompass";
 import useGeolocation from "@/customhooks/useGeolocation";
-import RotatingSquares from "@/components/animation/loading";
 import { IoCopyOutline, IoSettingsOutline } from "react-icons/io5";
 const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
@@ -24,7 +23,6 @@ const Room = () => {
   const [showConfigModal, setConfigModal] = useState(false);
   const [copied, setCopied] = useState(false);
   const { startWatching } = useGeolocation();
-  const [loading, setLoading] = useState(true);
   const [is3D, setIs3D] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -142,20 +140,12 @@ const Room = () => {
     let fontsReady = false;
     let timeoutDone = false;
 
-    const checkDone = () => {
-      if (fontsReady && timeoutDone) {
-        setLoading(false);
-      }
-    };
-
     document.fonts.ready.then(() => {
       fontsReady = true;
-      checkDone();
     });
 
     const timer = setTimeout(() => {
       timeoutDone = true;
-      checkDone();
     }, 1000);
 
     return () => clearTimeout(timer);
@@ -179,15 +169,6 @@ const Room = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // ✅ ローディング画面を中央に表示
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#f7f8f9]">
-        <RotatingSquares />
-      </div>
-    );
-  }
-
   if (userrole === "host") {
     // ホスト側の表示
     return (
@@ -195,8 +176,10 @@ const Room = () => {
         <div className="h-[25vh] px-4 py-9">
           {/* ルーム名 */}
           <h2
-            className="text-center text-5xl h-1/2"
-            style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
+            className="text-center text-5xl h-1/2 text-gray-600 truncate"
+            style={{
+              fontFamily: "NicoMoji",
+            }}
           >
             {roomData.name}
           </h2>
