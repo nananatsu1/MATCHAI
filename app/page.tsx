@@ -58,9 +58,6 @@ const Home = () => {
             transition={{ duration: 1.3 }} // ゆっくり表示
             className="text-center"
           >
-
-
-
             <h3
               className="text-gray-600 text-4xl mb-8 font-nico"
               style={{ color: "#7d7d7d", fontFamily: "NicoMoji" }}
@@ -69,7 +66,7 @@ const Home = () => {
             </h3>
 
             <JoinRoomForm />
-            <div className="flex items-center gap-4 mb-4 w-150">
+            <div className="flex items-center gap-4 mb-4 w-full">
               <div className="flex-grow border-t-2 border-gray-300"></div>
               <span
                 className="text-gray-600 text-xl"
