@@ -6,6 +6,7 @@ import {
 } from "@/utils/supabaseFunction";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 const JoinRoomForm = () => {
   const [password, setPassword] = useState(["", "", "", ""]);
@@ -56,7 +57,7 @@ const JoinRoomForm = () => {
   return (
     <div>
       <form onSubmit={(e) => handleSubmit(e)}>
-        <div className="flex justify-center items-center gap-4 mb-10">
+        <div className="flex justify-center items-center gap-3 mb-10">
           {password.map((val, index) => (
             <input
               key={index}
@@ -67,7 +68,7 @@ const JoinRoomForm = () => {
               inputMode="numeric" // 数字キーボードを開く
               pattern="[0-9]" // 数字のみ許可
               maxLength={1}
-              className="w-18 h-22 border-2 rounded-2xl text-center text-xl outline-none"
+              className="w-18 h-22 border-2 rounded-2xl text-center text-4xl outline-none"
               style={{
                 borderColor: borderColors[index],
                 color: "#7d7d7d",
@@ -91,7 +92,9 @@ const JoinRoomForm = () => {
             />
           ))}
         </div>
-        <button
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15 }}
           className="w-45 h-13 mx-auto block px-2 py-2 mb-8 bg-white rounded-xl"
           style={{
             boxShadow: "2px 6px 3px #dee6ee",
@@ -101,8 +104,7 @@ const JoinRoomForm = () => {
           <p className="text-gray-600 text-2xl">
           ルームに参加
           </p>
-          
-        </button>
+        </motion.button>
       </form>
     </div>
   );

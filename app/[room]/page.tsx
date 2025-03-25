@@ -14,6 +14,9 @@ import { useEffect, useRef, useState } from "react";
 import useGyroCompass from "@/customhooks/useGyroCompass";
 import useGeolocation from "@/customhooks/useGeolocation";
 import { IoCopyOutline, IoSettingsOutline } from "react-icons/io5";
+import { RxCross1 } from "react-icons/rx";
+import { motion } from "framer-motion";
+
 const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
   const [clientsData, setClientsData] = useState<any>([]);
@@ -203,7 +206,7 @@ const Room = () => {
               onClick={copyToClipboard}
               className="px-2 py-2 rounded hover:bg-gray-200 ml-60"
             >
-              <IoCopyOutline className="text-gray-500 text-3xl ml-10" />
+              <IoCopyOutline size={24} color="#7d7d7d" />
             </button>
             {/* バルーンメッセージ */}
             {copied && (
@@ -262,7 +265,9 @@ const Room = () => {
         {/* 退出ボタン */}
         <div className="h-[15vh] justify-start items-center flex absolute mt-1">
           <div className="">
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
               onClick={handleExitRoom}
               className="ml-7 px-4 py-2 rounded-4xl bg-white"
               style={{
@@ -273,11 +278,13 @@ const Room = () => {
               }}
             >
               <p className="text-3xl">← ルーム退出</p>
-            </button>
+            </motion.button>
           </div>
           {/* 設定ボタン */}
           <div>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.8, rotate: -30 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
               onClick={openConfigModal}
               className="ml-15 px-3 py-3 rounded-4xl bg-white"
               style={{
@@ -288,26 +295,28 @@ const Room = () => {
               }}
             >
               <IoSettingsOutline className="text-3xl text-gray-600" />
-            </button>
+            </motion.button>
           </div>
         </div>
 
         {showConfigModal && (
           <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-50">
             <div className="bg-[#f9f8f7] rounded-3xl p-6 w-72 shadow-lg relative">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 onClick={closeConfigModal}
                 className="absolute top-3 right-3 text-2xl text-gray-400"
               >
-                ×
-              </button>
-              <p className="flex items-center justify-center text-gray-600 text-2xl">
+                <RxCross1 className="text-gray-400" />
+              </motion.button>
+              <p className="flex items-center justify-center font-semibold text-gray-600 text-xl">
                 設定
               </p>
               {/* 音量調整 */}
-              <div className="flex mt-10">
+              <div className="flex mt-8">
                 <p
-                  className="text-center text-gray-600 ml-5"
+                  className="text-center text-xl text-gray-600 ml-5"
                   style={{ fontFamily: "NicoMoji" }}
                 >
                   音量
@@ -347,7 +356,9 @@ const Room = () => {
           </div>
           <div className="flex justify-center min-h-[5vh]">
             {!permissionGranted && (
-              <button
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 onClick={requestPermission}
                 className="px-4 py-2 flex items-center justify-center text-center bg-blue-100 text-gray-600 rounded-2xl text-xl"
                 style={{
@@ -357,7 +368,7 @@ const Room = () => {
                 }}
               >
                 センサーの許可
-              </button>
+              </motion.button>
             )}
           </div>
 
@@ -404,7 +415,9 @@ const Room = () => {
           {/* 退出ボタン */}
           <div className="h-[15vh] justify-start items-center flex absolute mt-1">
             <div className="">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 onClick={handleExitRoom}
                 className="ml-7 px-4 py-2 rounded-4xl bg-white"
                 style={{
@@ -415,11 +428,13 @@ const Room = () => {
                 }}
               >
                 <p className="text-3xl">← ルーム退出</p>
-              </button>
+              </motion.button>
             </div>
             {/* 設定ボタン */}
             <div>
-              <button
+              <motion.button
+                whileTap={{ scale: 0.8, rotate: -30 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 onClick={openConfigModal}
                 className="ml-15 px-3 py-3 rounded-4xl bg-white"
                 style={{
@@ -430,24 +445,26 @@ const Room = () => {
                 }}
               >
                 <IoSettingsOutline className="text-3xl text-gray-600" />
-              </button>
+              </motion.button>
             </div>
           </div>
 
           {showConfigModal && (
             <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-50">
               <div className="bg-[#f9f8f7] rounded-3xl p-6 w-72 shadow-lg relative">
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   onClick={closeConfigModal}
                   className="absolute top-3 right-3 text-4xl text-gray-400"
                 >
-                  ×
-                </button>
-                <p className="flex items-center justify-center text-gray-600 text-2xl">
+                  <RxCross1 className="text-gray-400 " />
+                </motion.button>
+                <p className="flex items-center justify-center font-semibold text-gray-600 text-2xl">
                   設定
                 </p>
                 {/* 音量調整 */}
-                <div className="flex mt-10">
+                <div className="flex mt-8">
                   <p className="text-center text-xl text-gray-600 ml-5">音量</p>
 
                   <input
@@ -465,7 +482,9 @@ const Room = () => {
 
                 {/* 表示切り替えボタン */}
                 <div className="mt-10 flex items-center justify-center space-x-4">
-                  <button
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
                     onClick={() => setIs3D(true)}
                     style={{
                       backgroundColor: is3D ? "#ffffff" : "#f0f0f0",
@@ -478,8 +497,10 @@ const Room = () => {
                     className="text-gray-600 text-xl text-semibold"
                   >
                     3D
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
                     onClick={() => setIs3D(false)}
                     style={{
                       backgroundColor: !is3D ? "#ffffff" : "#f0f0f0",
@@ -492,7 +513,7 @@ const Room = () => {
                     className="text-gray-600 text-xl text-semibold"
                   >
                     2D
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </div>

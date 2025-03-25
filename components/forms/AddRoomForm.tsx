@@ -2,6 +2,8 @@
 import { useRouter } from "next/navigation";
 import { addRoom, generateRoomId } from "@/utils/supabaseFunction";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { RxCross1 } from "react-icons/rx";
 
 const AddRoomForm = () => {
   const router = useRouter();
@@ -27,32 +29,33 @@ const AddRoomForm = () => {
 
   return (
     <div className="mt-8">
-      <button
+      <motion.button
         onClick={openCreateModal}
-        className="w-45 h-13 mx-auto block px-2 py-2 mb-8 bg-white rounded-xl"
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        className="w-45 h-13 mx-auto block px-4 py-2 mb-8 bg-white rounded-xl"
         style={{
           boxShadow: "2px 6px 3px #dee6ee",
-
           fontFamily: "NicoMoji",
         }}
       >
         <p className="text-gray-600 text-2xl">
           ルームを作成
         </p>
-      </button>
+      </motion.button>
 
       {showModal && (
         <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-[#f9f8f7] rounded-3xl p-6 w-72 shadow-lg relative">
             <button
               onClick={closeModal}
-              className="absolute top-3 right-3 text-2xl text-gray-400"
+              className="absolute top-5 right-5 text-2xl text-gray-400"
             >
-              ×
+              <RxCross1  className="text-gray-400 "/>
             </button>
 
             <p
-              className="text-center mb-4"
+              className="text-center mt-10 mb-4 text-3xl"
               style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
             >
               ルーム名を入力
@@ -62,16 +65,18 @@ const AddRoomForm = () => {
               type="text"
               placeholder="新しい部屋"
               onChange={(e) => setName(e.target.value)}
-              className="w-full mb-5 p-2 text-center bg-[#ddd] rounded"
+              className="w-full mt-2 mb-6 p-2 text-2xl text-center bg-[#ddd] rounded-xl"
               style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
             />
 
-            <button
+            <motion.button
               onClick={() => {
                 closeModal();
                 createRoom();
               }}
-              className="mx-auto block px-6 py-2 bg-white"
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              className="mx-auto block px-4 py-2 mb-4 text-2xl rounded-xl bg-white"
               style={{
                 fontFamily: "NicoMoji",
                 color: "#7d7d7d",
@@ -79,7 +84,7 @@ const AddRoomForm = () => {
               }}
             >
               ルームを作成
-            </button>
+            </motion.button>
           </div>
         </div>
       )}

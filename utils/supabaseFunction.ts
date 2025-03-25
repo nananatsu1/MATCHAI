@@ -25,8 +25,7 @@ export const getAllClients = async () => {
   return clientsData;
 };
 
-
-export const getRoomData = async() => {
+export const getRoomData = async () => {
   const userid = localStorage.getItem("id");
   const mydata = await supabase
     .from("user")
@@ -35,7 +34,7 @@ export const getRoomData = async() => {
     .single();
 
   const pass = mydata.data?.room_pass;
-  
+
   const roomData = await supabase
     .from("room")
     .select("pass, name")
@@ -43,7 +42,6 @@ export const getRoomData = async() => {
     .single();
   return roomData.data;
 };
-
 
 export const getRealTimeClients = (callback: () => void) => {
   const subscription = supabase
@@ -96,7 +94,6 @@ export const generateRoomId = async () => {
   return roomid;
 };
 
-
 export const joinRoom = async (pass: number) => {
   const userid = localStorage.getItem("id");
   await supabase
@@ -106,7 +103,7 @@ export const joinRoom = async (pass: number) => {
 
   await supabase
     .from("room")
-    .update({update_at: new Date() })
+    .update({ update_at: new Date() })
     .eq("pass", pass);
 };
 
@@ -131,7 +128,7 @@ export const isRoomLocking = async (password: number): Promise<boolean> => {
 
   await supabase
     .from("room")
-    .update({update_at: new Date() })
+    .update({ update_at: new Date() })
     .eq("pass", password);
 
   if (!data) {
@@ -159,7 +156,12 @@ export const updateLocation = async (
   const userid = localStorage.getItem("id");
   await supabase
     .from("user")
-    .update({ latitude: latitude, longitude: longitude, altitude: altitude, update_at: new Date() })
+    .update({
+      latitude: latitude,
+      longitude: longitude,
+      altitude: altitude,
+      update_at: new Date(),
+    })
     .eq("id", userid);
 };
 
@@ -176,7 +178,7 @@ export const getMyLocation = async () => {
 
 export const getHostLocation = async () => {
   const userid = localStorage.getItem("id");
-  
+
   // room_passを取得
   const { data: mydata } = await supabase
     .from("user")
@@ -198,7 +200,7 @@ export const getHostLocation = async () => {
     .eq("room_pass", pass) // room_passが一致するユーザーをフィルタリング
     .eq("role", "host") // roleが"host"であるユーザーを対象
     .single();
-  
+
   return data;
 };
 
@@ -224,7 +226,7 @@ export const GetRealTimeLocations = (callback: () => void) => {
       (payload) => {
         // 変更されたカラムをチェック
         const updatedColumns = Object.keys(payload.new);
-        
+
         // latitude, longitude, altitude のいずれかが更新された場合のみ callback を実行
         if (
           updatedColumns.includes("latitude") ||
@@ -262,4 +264,50 @@ export const ResetData = async () => {
       update_at: new Date(),
     })
     .eq("id", userid);
+};
+
+// ユーザー設定の更新
+export const updateUserSettings = async (
+  userId: string,
+  name: string,
+  icon: string | null = null
+) => {
+  await supabase
+    .from("user")
+    .update({
+      name: name,
+      icon: icon,
+      update_at: new Date(),
+    })
+    .eq("id", userId);
+};
+
+// ユーザー設定の取得
+export const getUserSettings = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("user")
+      .select("name, icon")
+      .eq("id", userId)
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error fetching user settings:", error);
+    return null;
+  }
+};
+
+// 画像のアップロード
+export const uploadUserIcon = async (userId: string, file: File) => {
+  const fileExt = file.name.split(".").pop();
+  const filePath = `${userId}/${Math.random()}.${fileExt}`;
+
+  // ファイルをアップロード
+  await supabase.storage
+    .from("icons")
+    .upload(filePath, file);
+
+  return filePath;
 };
