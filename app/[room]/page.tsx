@@ -15,7 +15,7 @@ import useGyroCompass from "@/customhooks/useGyroCompass";
 import useGeolocation from "@/customhooks/useGeolocation";
 import { IoCopyOutline, IoSettingsOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
@@ -301,43 +301,57 @@ const Room = () => {
           </div>
         </div>
 
-        {showConfigModal && (
-          <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-50">
-            <div className="bg-[#f9f8f7] rounded-3xl p-6 w-72 shadow-lg relative">
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                onClick={closeConfigModal}
-                className="absolute top-3 right-3 text-2xl text-gray-400"
+        <AnimatePresence>
+          {showConfigModal && (
+            <motion.div
+              className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50"
+              onClick={closeConfigModal}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.5, opacity: 0 }}
+                className="bg-white p-8 rounded-lg relative w-[90%] max-w-md"
+                onClick={(e) => e.stopPropagation()}
               >
-                <RxCross1 className="text-gray-400" />
-              </motion.button>
-              <p className="flex items-center justify-center font-semibold text-gray-600 text-xl">
-                設定
-              </p>
-              {/* 音量調整 */}
-              <div className="flex mt-8">
-                <p
-                  className="text-center text-xl text-gray-600 ml-5"
-                  style={{ fontFamily: "NicoMoji" }}
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  onClick={closeConfigModal}
+                  className="absolute top-3 right-3 text-2xl text-gray-400"
                 >
-                  音量
+                  <RxCross1 className="text-gray-400" />
+                </motion.button>
+                <p className="flex items-center justify-center font-semibold text-gray-600 text-xl">
+                  設定
                 </p>
+                {/* 音量調整 */}
+                <div className="flex mt-8">
+                  <p
+                    className="text-center text-xl text-gray-600 ml-5"
+                    style={{ fontFamily: "NicoMoji" }}
+                  >
+                    音量
+                  </p>
 
-                <input
-                  type="range"
-                  id="volume"
-                  min="0"
-                  max="100"
-                  value="50"
-                  onChange={handleVolumeChange}
-                  style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                  className="ml-12"
-                />
-              </div>
-            </div>
-          </div>
-        )}
+                  <input
+                    type="range"
+                    id="volume"
+                    min="0"
+                    max="100"
+                    value="50"
+                    onChange={handleVolumeChange}
+                    style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
+                    className="ml-12"
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     );
   } else if (userrole === "client") {
@@ -451,75 +465,89 @@ const Room = () => {
             </div>
           </div>
 
-          {showConfigModal && (
-            <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-50">
-              <div className="bg-[#f9f8f7] rounded-3xl p-6 w-72 shadow-lg relative">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                  onClick={closeConfigModal}
-                  className="absolute top-3 right-3 text-4xl text-gray-400"
+          <AnimatePresence>
+            {showConfigModal && (
+              <motion.div
+                className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50"
+                onClick={closeConfigModal}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <motion.div
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.5, opacity: 0 }}
+                  className="bg-white p-8 rounded-lg relative w-[90%] max-w-md"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <RxCross1 className="text-gray-400 " />
-                </motion.button>
-                <p className="flex items-center justify-center font-semibold text-gray-600 text-2xl">
-                  設定
-                </p>
-                {/* 音量調整 */}
-                <div className="flex mt-8">
-                  <p className="text-center text-xl text-gray-600 ml-5">音量</p>
-
-                  <input
-                    type="range"
-                    id="volume"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    value={volume}
-                    onChange={handleVolumeChange}
-                    style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                    className="ml-12"
-                  />
-                </div>
-
-                {/* 表示切り替えボタン */}
-                <div className="mt-10 flex items-center justify-center space-x-4">
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                    onClick={() => setIs3D(true)}
-                    style={{
-                      backgroundColor: is3D ? "#ffffff" : "#f0f0f0",
-                      fontFamily: "NicoMoji",
-                      boxShadow: "0 2px 2px #dee6ee",
-                      padding: "0.5rem 2rem",
-                      border: "none",
-                      borderRadius: "0.5rem",
-                    }}
-                    className="text-gray-600 text-xl text-semibold"
+                    onClick={closeConfigModal}
+                    className="absolute top-3 right-3 text-4xl text-gray-400"
                   >
-                    3D
+                    <RxCross1 className="text-gray-400 " />
                   </motion.button>
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                    onClick={() => setIs3D(false)}
-                    style={{
-                      backgroundColor: !is3D ? "#ffffff" : "#f0f0f0",
-                      fontFamily: "NicoMoji",
-                      boxShadow: "0 2px 2px #dee6ee",
-                      padding: "0.5rem 2rem",
-                      border: "none",
-                      borderRadius: "0.5rem",
-                    }}
-                    className="text-gray-600 text-xl text-semibold"
-                  >
-                    2D
-                  </motion.button>
-                </div>
-              </div>
-            </div>
-          )}
+                  <p className="flex items-center justify-center font-semibold text-gray-600 text-2xl">
+                    設定
+                  </p>
+                  {/* 音量調整 */}
+                  <div className="flex mt-8">
+                    <p className="text-center text-xl text-gray-600 ml-5">音量</p>
+
+                    <input
+                      type="range"
+                      id="volume"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={volume}
+                      onChange={handleVolumeChange}
+                      style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
+                      className="ml-12"
+                    />
+                  </div>
+
+                  {/* 表示切り替えボタン */}
+                  <div className="mt-10 flex items-center justify-center space-x-4">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                      onClick={() => setIs3D(true)}
+                      style={{
+                        backgroundColor: is3D ? "#ffffff" : "#f0f0f0",
+                        fontFamily: "NicoMoji",
+                        boxShadow: "0 2px 2px #dee6ee",
+                        padding: "0.5rem 2rem",
+                        border: "none",
+                        borderRadius: "0.5rem",
+                      }}
+                      className="text-gray-600 text-xl text-semibold"
+                    >
+                      3D
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                      onClick={() => setIs3D(false)}
+                      style={{
+                        backgroundColor: !is3D ? "#ffffff" : "#f0f0f0",
+                        fontFamily: "NicoMoji",
+                        boxShadow: "0 2px 2px #dee6ee",
+                        padding: "0.5rem 2rem",
+                        border: "none",
+                        borderRadius: "0.5rem",
+                      }}
+                      className="text-gray-600 text-xl text-semibold"
+                    >
+                      2D
+                    </motion.button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     );
