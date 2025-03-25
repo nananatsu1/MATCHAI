@@ -8,7 +8,11 @@ import RotatingSquares from "@/components/animation/loading";
 import { motion } from "framer-motion";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { RxCross1 } from "react-icons/rx";
-import { getUserSettings, updateUserSettings, uploadUserIcon } from "@/utils/supabaseFunction";
+import {
+  getUserSettings,
+  updateUserSettings,
+  uploadUserIcon,
+} from "@/utils/supabaseFunction";
 import Image from "next/image";
 
 const Home = () => {
@@ -45,7 +49,7 @@ const Home = () => {
   // ユーザー設定を読み込む
   useEffect(() => {
     const loadUserSettings = async () => {
-      const userId = localStorage.getItem('id');
+      const userId = localStorage.getItem("id");
       if (userId) {
         const settings = await getUserSettings(userId);
         if (settings) {
@@ -62,7 +66,7 @@ const Home = () => {
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const userId = localStorage.getItem('id');
+    const userId = localStorage.getItem("id");
     if (!userId) return;
     const file = e.target.files?.[0];
     console.log("");
@@ -77,7 +81,7 @@ const Home = () => {
   };
 
   const handleSaveSettings = async () => {
-    const userId = localStorage.getItem('id');
+    const userId = localStorage.getItem("id");
     if (userId) {
       await updateUserSettings(userId, userName, userIcon);
       setShowUserModal(false);
@@ -92,32 +96,6 @@ const Home = () => {
         className="w-full h-screen flex flex-col justify-center items-center relative"
         style={{ backgroundColor: "#f9f8f7" }}
       >
-        {/* ユーザーアイコン */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          onClick={() => setShowUserModal(true)}
-          className="absolute top-4 left-5"
-        >
-          <Image
-            src={userIcon}
-            alt="User Icon"
-            width={55}
-            height={55}
-            className="rounded-full"
-          />
-        </motion.button>
-
-        {/* 情報アイコン */}
-        <motion.button
-          whileTap={{ scale: 0.8, rotate: 10 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          onClick={() => setShowInfoModal(true)}
-          className="absolute top-5 right-5"
-        >
-          <IoIosInformationCircleOutline className="text-5xl text-gray-300" />
-        </motion.button>
-
         {loading ? (
           <motion.div
             initial={{ opacity: 1 }} // 最初は透明
@@ -133,6 +111,31 @@ const Home = () => {
             transition={{ duration: 1.3 }} // ゆっくり表示
             className="text-center"
           >
+            {/* ユーザーアイコン */}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              onClick={() => setShowUserModal(true)}
+              className="absolute top-4 left-5"
+            >
+              <Image
+                src={userIcon}
+                alt="User Icon"
+                width={55}
+                height={55}
+                className="rounded-full"
+              />
+            </motion.button>
+
+            {/* 情報アイコン */}
+            <motion.button
+              whileTap={{ scale: 0.8, rotate: 10 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              onClick={() => setShowInfoModal(true)}
+              className="absolute top-5 right-5"
+            >
+              <IoIosInformationCircleOutline className="text-5xl text-gray-300" />
+            </motion.button>
             <h3
               className="text-gray-600 text-4xl mb-12 font-nico"
               style={{ color: "#7d7d7d", fontFamily: "NicoMoji" }}
