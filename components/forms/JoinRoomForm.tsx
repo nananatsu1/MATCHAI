@@ -56,7 +56,7 @@ const JoinRoomForm = () => {
   return (
     <div>
       <form onSubmit={(e) => handleSubmit(e)}>
-        <div className="flex justify-center gap-4 mb-6">
+        <div className="flex justify-center items-center gap-4 mb-10">
           {password.map((val, index) => (
             <input
               key={index}
@@ -67,7 +67,7 @@ const JoinRoomForm = () => {
               inputMode="numeric" // 数字キーボードを開く
               pattern="[0-9]" // 数字のみ許可
               maxLength={1}
-              className="w-12 h-15 border-2 rounded-lg text-center text-xl outline-none"
+              className="w-18 h-22 border-2 rounded-2xl text-center text-xl outline-none"
               style={{
                 borderColor: borderColors[index],
                 color: "#7d7d7d",
@@ -92,13 +92,13 @@ const JoinRoomForm = () => {
           ))}
         </div>
         <button
-          className="w-30 mx-auto block px-2 py-2 mb-4 bg-white"
+          className="w-45 h-13 mx-auto block px-2 py-2 mb-8 bg-white rounded-xl"
           style={{
             boxShadow: "2px 6px 3px #dee6ee",
             fontFamily: "NicoMoji",
           }}
         >
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-2xl">
           ルームに参加
           </p>
           
