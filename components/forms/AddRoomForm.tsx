@@ -76,7 +76,7 @@ const AddRoomForm = () => {
               }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              className="mx-auto block px-4 py-2 mb-4 text-2xl rounded-xl bg-white"
+              className="mx-auto block px-4 py-2 text-2xl rounded-xl bg-white"
               style={{
                 fontFamily: "NicoMoji",
                 color: "#7d7d7d",
