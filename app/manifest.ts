@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "集合がもっと楽になるアプリ",
     start_url: "/",
     display: "standalone",
-    theme_color: "#8936FF",
+    theme_color: "#F9F8F7",
     background_color: "#F9F8F7",
     "icons": [
       {
