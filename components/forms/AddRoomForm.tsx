@@ -33,8 +33,8 @@ const AddRoomForm = () => {
     <div className="mt-8">
       <motion.button
         onClick={openCreateModal}
-        whileTap={{ scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        whileTap={{ scale: 0.8, boxShadow: "1px 3px 2px #dee6ee" }}
+        transition={{ type: "spring", stiffness: 400, damping: 15 }}
         className="w-45 h-13 mx-auto block px-4 py-2 mb-8 bg-white rounded-xl"
         style={{
           boxShadow: "2px 6px 3px #dee6ee",
@@ -89,8 +89,8 @@ const AddRoomForm = () => {
                   closeModal();
                   createRoom();
                 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                whileTap={{ scale: 0.9, y: 2, boxShadow: "0 1px 1px #dee6ee" }}
+                transition={{ type: "spring", stiffness: 400, damping: 15 }}
                 className="mx-auto block px-4 py-2 text-2xl rounded-xl bg-white"
                 style={{
                   fontFamily: "NicoMoji",

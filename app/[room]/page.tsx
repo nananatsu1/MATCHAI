@@ -13,9 +13,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import useGyroCompass from "@/customhooks/useGyroCompass";
 import useGeolocation from "@/customhooks/useGeolocation";
-import { IoCopyOutline, IoSettingsOutline } from "react-icons/io5";
+import { IoCopyOutline, IoCheckmarkOutline, IoSettingsOutline, IoLocationOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const Room = () => {
   const [userrole, setUserrole] = useState<string | null>(null);
@@ -118,7 +119,7 @@ const Room = () => {
   // 距離を整形する関数
   const formatDistance = (distance: number) => {
     if (distance >= 1000) {
-      return `${(distance / 1000).toFixed(3)} km`; // 小数第三位まで表示
+      return `${(distance / 1000).toFixed(1)} km`; // 小数第三位まで表示
     }
     return `${Math.round(distance)} m`; // 小数点なしで表示
   };
@@ -168,10 +169,10 @@ const Room = () => {
     document.body.style.overflow = 'auto';
   };
 
-  const copyToClipboard = async () => {
-    await navigator.clipboard.writeText(roomData.pass);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(roomData.pass);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 1000);
   };
 
   if (userrole === "host") {
@@ -190,40 +191,40 @@ const Room = () => {
           </h2>
 
           {/* パスワード表示 */}
-          <div className="relative mt-3 text-center flex items-center justify-center space-x-4 border-6 border-gray-200 rounded-2xl pt-1 pb-1">
-            <p
-              className="text-2xl absolute left-3"
-              style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-            >
-              パスワード：
-            </p>
-            <p
-              className="text-2xl font-semibold absolute left-40"
-              style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-            >
-              {roomData.pass}
-            </p>
-
-            <button
-              onClick={copyToClipboard}
-              className="px-2 py-2 rounded hover:bg-gray-200 ml-60"
-            >
-              <IoCopyOutline size={24} color="#7d7d7d" />
-            </button>
-            {/* バルーンメッセージ */}
-            {copied && (
-              <p
-                className="absolute top-full  right-0 text-gray-600 px-4 py-2 rounded-md text-xl"
-                style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
+          <div className="relative mt-6 text-center flex items-center justify-center space-x-4 border-3 border-gray-100 rounded-2xl pt-3 pb-3 min-w-[300px] h-[50px]">
+            <div className="w-full flex items-center justify-between px-5">
+              <div className="flex items-center">
+                <p
+                  className="text-2xl"
+                  style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
+                >
+                  パスワード：
+                </p>
+                <p
+                  className="text-2xl font-semibold ml-4"
+                  style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
+                >
+                  {roomData.pass}
+                </p>
+              </div>
+              <button
+                onClick={copyToClipboard}
+                className={`px-2 py-2 rounded transition-all duration-300 ${
+                  copied ? "bg-green-100 scale-110 rounded-full" : "hover:bg-gray-200"
+                }`}
               >
-                コピー！
-              </p>
-            )}
+                {copied ? (
+                  <IoCheckmarkOutline size={24} color="#22c55e" className="animate-pulse" />
+                ) : (
+                  <IoCopyOutline size={24} color="#7d7d7d" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* 参加者一覧 */}
-        <div className="mt-3 ml-4 mr-4 space-y-2 overflow-y-auto h-[55vh] border-4 rounded-2xl">
+        <div className="mt-3 ml-4 mr-4 space-y-2 overflow-y-auto h-[55vh] border-3 border-gray-100 rounded-2xl p-4">
           {clientsData.length > 0 ? (
             clientsData.map(
               (client: {
@@ -231,26 +232,42 @@ const Room = () => {
                 name: string | null;
                 icon: string | null;
                 distance: number;
-              }) => (
-                <div
-                  key={client.id}
-                  className="flex justify-between items-center px-4 py-2 rounded shadow-sm"
-                  style={{
-                    backgroundColor: "white",
-                    fontFamily: "NicoMoji",
-                    color: "#7d7d7d",
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    {/* <UserIcon color={clientsData.icon} size={20} /> */}
-                    <span className="text-sm">{client.name}</span>
+              }) => {
+                // IDを基に色相を生成（0-360度）
+                const hue = client.id ? ((client.id * 83) % 360 + (client.id * 157) % 180) % 360 : 0;
+                return (
+                  <div
+                    key={client.id}
+                    className="flex justify-between items-center px-6 py-3 rounded-4xl"
+                    style={{
+                      backgroundColor: "white",
+                      fontFamily: "NicoMoji",
+                      color: "#7d7d7d",
+                      boxShadow: `8px 5px 4px hsla(${hue}, 80%, 80%, 0.2), 6px 3px 2px hsla(${hue}, 80%, 80%, 0.1)`,
+                      border: `1px solid hsla(${hue}, 60%, 85%, 0.8)`
+                    }}
+                  >
+                    <div className="flex items-center gap-4">
+                      <Image
+                        src={client.icon || "/icons/user_default_icon.png"}
+                        alt={`${client.name}のアイコン`}
+                        width={45}
+                        height={45}
+                        className="rounded-full"
+                      />
+                      <span className="text-xl">{client.name}</span>
+                    </div>
+                    <div className="flex items-center text-xl">
+                      <IoLocationOutline 
+                        size={24} 
+                        color={`hsla(${hue}, 70%, 60%, 1)`} 
+                        className="mr-5"
+                      />
+                      <span className="ml-1">{formatDistance(client.distance)}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 text-sm">
-                    {/* <MapPinIcon color={member.iconColor} size={20} /> */}
-                    {client.distance}
-                  </div>
-                </div>
-              )
+                );
+              }
             )
           ) : (
             <div className="flex justify-center items-center h-[54vh] w-full">
@@ -268,7 +285,7 @@ const Room = () => {
         <div className="h-[15vh] justify-start items-center flex absolute mt-1">
           <div className="">
             <motion.button
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.8 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
               onClick={handleExitRoom}
               className="ml-7 px-4 py-2 rounded-4xl bg-white"
@@ -285,7 +302,7 @@ const Room = () => {
           {/* 設定ボタン */}
           <div>
             <motion.button
-              whileTap={{ scale: 0.8, rotate: -30 }}
+              whileTap={{ scale: 0.8, rotate: -45 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
               onClick={openConfigModal}
               className="ml-15 px-3 py-3 rounded-4xl bg-white"
@@ -373,13 +390,13 @@ const Room = () => {
           <div className="flex justify-center min-h-[5vh]">
             {!permissionGranted && (
               <motion.button
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.8 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 onClick={requestPermission}
                 className="px-4 py-2 flex items-center justify-center text-center bg-blue-100 text-gray-600 rounded-2xl text-xl"
                 style={{
                   fontFamily: "NicoMoji",
-                  boxShadow: "2px 6px 3px #6495ed",
+                  boxShadow: "0 6px 3px #6495ed",
                   border: "none",
                 }}
               >
@@ -390,7 +407,7 @@ const Room = () => {
 
           <div className="h-[50vh] flex items-center justify-center">
             {/* 円と距離表示 */}
-            <div className="w-[40vh] h-[40vh] rounded-full border-4 border-blue-200 flex items-center justify-center relative">
+            <div className="w-[40vh] h-[40vh] rounded-full border border-gray-100 flex items-center justify-center relative">
               <div className="text-center">
                 <p
                   className="text-xl text-gray-500"

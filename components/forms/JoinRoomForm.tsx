@@ -93,7 +93,7 @@ const JoinRoomForm = () => {
           ))}
         </div>
         <motion.button
-          whileTap={{ scale: 0.95 }}
+          whileTap={{ scale: 0.8 }}
           transition={{ type: "spring", stiffness: 300, damping: 15 }}
           className="w-45 h-13 mx-auto block px-2 py-2 mb-8 bg-white rounded-xl"
           style={{
