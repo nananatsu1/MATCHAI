@@ -78,10 +78,8 @@ const AddRoomForm = () => {
 
               <input
                 type="text"
+                inputMode="text"
                 placeholder="新しい部屋"
-                readOnly
-                onFocus={(e) => e.target.removeAttribute('readonly')}
-                onBlur={(e) => e.target.setAttribute('readonly', 'readonly')}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full mt-2 mb-6 p-2 text-2xl text-center bg-[#ddd] rounded-xl"
                 style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
