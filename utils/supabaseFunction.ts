@@ -18,7 +18,6 @@ export const getAllClients = async () => {
     .eq("role", "client");
 
   if (clientError) {
-    console.error("getAllClients Error: Failed to fetch clients", clientError);
     return [];
   }
 

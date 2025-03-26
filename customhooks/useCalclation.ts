@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { fetchLocations, GetRealTimeLocations, setDistance } from "@/utils/supabaseFunction";
 import { Geodesic } from "geographiclib";
+import { useDebouncedCallback } from 'use-debounce'; 
 
 const toRadians = (degrees: number) => degrees * (Math.PI / 180);
 const toDegrees = (radians: number) => radians * (180 / Math.PI);
@@ -40,6 +41,14 @@ const useCalclation = () => {
   const [hostLatitude, setHostLatitude] = useState<number | null>(null);
   const [hostLongitude, setHostLongitude] = useState<number | null>(null);
 
+  const debouncedUpdate = useDebouncedCallback(async () => {
+    const updatedLocations = await fetchLocations();
+    setMyLatitude(updatedLocations.myLatitude);
+    setMyLongitude(updatedLocations.myLongitude);
+    setHostLatitude(updatedLocations.hostLatitude);
+    setHostLongitude(updatedLocations.hostLongitude);
+  }, 1000); // 1秒間隔で更新
+
   useEffect(() => {
     // 初回データ取得
     const initialize = async () => {
@@ -50,20 +59,15 @@ const useCalclation = () => {
       setHostLongitude(locations.hostLongitude);
 
       // Supabase Realtime の監視を開始
-      const subscription = GetRealTimeLocations(async () => {
-        const updatedLocations = await fetchLocations();
-        setMyLatitude(updatedLocations.myLatitude);
-        setMyLongitude(updatedLocations.myLongitude);
-        setHostLatitude(updatedLocations.hostLatitude);
-        setHostLongitude(updatedLocations.hostLongitude);
-      });
-
+      const subscription = GetRealTimeLocations(debouncedUpdate);
+      
       return () => {
         subscription.unsubscribe();
+        debouncedUpdate.cancel();
       };
     };
     initialize();
-  }, []);
+  }, [debouncedUpdate]);
 
   const distance =
     myLatitude && myLongitude && hostLatitude !== null && hostLongitude !== null
