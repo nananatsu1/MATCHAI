@@ -359,6 +359,9 @@ const Home = () => {
                   {/* ユーザー名入力 */}
                   <input
                     type="text"
+                    inputMode="text"
+                    readOnly
+                    onFocus={(e) => e.target.removeAttribute('readonly')}
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     placeholder="ユーザー名"

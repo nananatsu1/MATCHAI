@@ -68,6 +68,8 @@ const JoinRoomForm = () => {
               inputMode="numeric" // 数字キーボードを開く
               pattern="[0-9]" // 数字のみ許可
               maxLength={1}
+              readOnly
+              onFocus={(e) => e.target.removeAttribute('readonly')}
               className="w-18 h-22 border-2 rounded-2xl text-center text-4xl outline-none"
               style={{
                 borderColor: borderColors[index],
