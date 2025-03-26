@@ -35,19 +35,28 @@ const getAngle = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   return (toDegrees(Math.atan2(y, x)) + 360) % 360; // 方角（度）
 };
 
+// 高度を計算
+const getHeight = (altitude1: number, altitude2: number) => {
+  return altitude1 - altitude2;
+};
+
 const useCalclation = () => {
   const [myLatitude, setMyLatitude] = useState<number | null>(null);
   const [myLongitude, setMyLongitude] = useState<number | null>(null);
+  const [myAltitude, setMyAltitude] = useState<number | null>(null);
   const [hostLatitude, setHostLatitude] = useState<number | null>(null);
   const [hostLongitude, setHostLongitude] = useState<number | null>(null);
+  const [hostAltitude, setHostAltitude] = useState<number | null>(null);
 
   const debouncedUpdate = useDebouncedCallback(async () => {
     const updatedLocations = await fetchLocations();
     setMyLatitude(updatedLocations.myLatitude);
     setMyLongitude(updatedLocations.myLongitude);
+    setMyAltitude(updatedLocations.myAltitude);
     setHostLatitude(updatedLocations.hostLatitude);
     setHostLongitude(updatedLocations.hostLongitude);
-  }, 1000); // 1秒間隔で更新
+    setHostAltitude(updatedLocations.hostAltitude);
+  }, 5000); // 5秒間隔で更新
 
   useEffect(() => {
     // 初回データ取得
@@ -55,8 +64,10 @@ const useCalclation = () => {
       const locations = await fetchLocations();
       setMyLatitude(locations.myLatitude);
       setMyLongitude(locations.myLongitude);
+      setMyAltitude(locations.myAltitude);
       setHostLatitude(locations.hostLatitude);
       setHostLongitude(locations.hostLongitude);
+      setHostAltitude(locations.hostAltitude);
 
       // Supabase Realtime の監視を開始
       const subscription = GetRealTimeLocations(debouncedUpdate);
@@ -81,7 +92,13 @@ const useCalclation = () => {
     myLatitude && myLongitude && hostLatitude !== null && hostLongitude !== null
       ? getAngle(myLatitude, myLongitude, hostLatitude, hostLongitude)
       : 0;
-  return { distance, angle };
+  
+  const height =
+    myAltitude && hostAltitude !== null
+      ? getHeight(myAltitude, hostAltitude)
+      : 0;
+  
+  return { distance, angle, height };
 };
 
 export default useCalclation;

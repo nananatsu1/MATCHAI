@@ -21,16 +21,16 @@ const Room = () => {
   const [clientsData, setClientsData] = useState<any>([]);
   const [roomData, setRoomData] = useState<any>([]);
   const router = useRouter();
-  const { distance = 0, angle = 0 } = useCalclation();
+  const { distance = 0, angle = 0, height = 0 } = useCalclation();
   const [showConfigModal, setConfigModal] = useState(false);
   const [copied, setCopied] = useState(false);
   const { startWatching } = useGeolocation();
-  const [is3D, setIs3D] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { rotation, permissionGranted, requestPermission } = useGyroCompass();
   const [arrowRotation, setArrowRotation] = useState<number>(0);
+  const [showAltitude, setShowAltitude] = useState(false);
 
   // 目的地の向きを計算
   useEffect(() => {
@@ -77,19 +77,16 @@ const Room = () => {
 
     const initialize = async () => {
       try {
-        console.log("🚀 Initializing...");
         await startWatching();
 
         const clientData = await getAllClients();
         if (clientData) {
           setClientsData(clientData);
         } else {
-          console.warn("⚠️ No client data found");
         }
 
         // Supabase Realtime の監視を開始
         subscription = getRealTimeClients(() => {
-          console.log("🔄 Realtime update triggered");
           const updateClients = async () => {
             const updatedClientData = await getAllClients();
             if (updatedClientData) {
@@ -108,7 +105,6 @@ const Room = () => {
 
     return () => {
       if (subscription) {
-        console.log("🛑 Unsubscribing from Realtime updates");
         subscription.unsubscribe();
       }
     };
@@ -172,6 +168,14 @@ const Room = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 1200);
   };
+
+  const altitudeDisplay = showAltitude && (
+    <div className="mt-2">
+      <p className="text-lg text-gray-500" style={{ fontFamily: "NicoMoji" }}>
+        高さ {height > 0 ? `+${height}` : height} m
+      </p>
+    </div>
+  );
 
   if (userrole === "host") {
     // ホスト側の表示
@@ -437,6 +441,7 @@ const Room = () => {
                   >
                     {formatDistance(distance)}
                   </p>
+                  {altitudeDisplay}
                 </div>
               </div>
             </div>
@@ -528,9 +533,9 @@ const Room = () => {
                     <motion.button
                       whileTap={{ scale: 0.8 }}
                       transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                      onClick={() => setIs3D(true)}
+                      onClick={() => setShowAltitude(!showAltitude)}
                       style={{
-                        backgroundColor: is3D ? "#ffffff" : "#f0f0f0",
+                        backgroundColor: showAltitude ? "#ffffff" : "#f0f0f0",
                         fontFamily: "NicoMoji",
                         boxShadow: "0 2px 2px #dee6ee",
                         padding: "0.5rem 2rem",
@@ -539,23 +544,7 @@ const Room = () => {
                       }}
                       className="text-gray-600 text-xl text-semibold"
                     >
-                      3D
-                    </motion.button>
-                    <motion.button
-                      whileTap={{ scale: 0.8 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                      onClick={() => setIs3D(false)}
-                      style={{
-                        backgroundColor: !is3D ? "#ffffff" : "#f0f0f0",
-                        fontFamily: "NicoMoji",
-                        boxShadow: "0 2px 2px #dee6ee",
-                        padding: "0.5rem 2rem",
-                        border: "none",
-                        borderRadius: "0.5rem",
-                      }}
-                      className="text-gray-600 text-xl text-semibold"
-                    >
-                      2D
+                      高度の表示 {showAltitude ? "ON" : "OFF"}
                     </motion.button>
                   </div>
                 </motion.div>

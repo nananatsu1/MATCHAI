@@ -168,7 +168,7 @@ export const getMyLocation = async () => {
   const userid = localStorage.getItem("id");
   const data = await supabase
     .from("user")
-    .select("latitude, longitude")
+    .select("latitude, longitude, altitude")
     .eq("id", userid)
     .single();
 
@@ -195,7 +195,7 @@ export const getHostLocation = async () => {
   // room_passが一致するホストの位置情報を取得
   const { data } = await supabase
     .from("user")
-    .select("latitude, longitude")
+    .select("latitude, longitude, altitude")
     .eq("room_pass", pass) // room_passが一致するユーザーをフィルタリング
     .eq("role", "host") // roleが"host"であるユーザーを対象
     .single();
@@ -211,8 +211,10 @@ export const fetchLocations = async () => {
   return {
     myLatitude: myLatestLocation?.data?.latitude || null,
     myLongitude: myLatestLocation?.data?.longitude || null,
+    myAltitude: myLatestLocation?.data?.altitude || null,
     hostLatitude: hostLatestLocation?.latitude || null,
     hostLongitude: hostLatestLocation?.longitude || null,
+    hostAltitude: hostLatestLocation?.altitude || null,
   };
 };
 
