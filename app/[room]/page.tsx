@@ -113,9 +113,17 @@ const Room = () => {
   // 距離を整形する関数
   const formatDistance = (distance: number) => {
     if (distance >= 1000) {
-      return `${(distance / 1000).toFixed(1)} km`; // 小数第三位まで表示
+      return `${(distance / 1000).toFixed(1)} km`; // 小数第一位まで表示
     }
     return `${Math.round(distance)} m`; // 小数点なしで表示
+  };
+  
+  // 高度を整形する関数
+  const formatHeight = (height: number) => {
+    if (height >= 1000) {
+      return `${(height / 1000).toFixed(1)} km`; // 小数第一位まで表示
+    }
+    return `${Math.round(height)} m`; // 小数点なしで表示
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,7 +180,7 @@ const Room = () => {
   const altitudeDisplay = showAltitude && (
     <div className="mt-2">
       <p className="text-lg text-gray-500" style={{ fontFamily: "NicoMoji" }}>
-        高さ {height > 0 ? `+${height}` : height} m
+        高さ {height > 0 ? `+${formatHeight(height)}` : formatHeight(height)}
       </p>
     </div>
   );
