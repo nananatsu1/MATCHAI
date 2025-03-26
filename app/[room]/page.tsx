@@ -245,7 +245,7 @@ const Room = () => {
                       border: `1px solid hsla(${hue}, 60%, 85%, 0.8)`
                     }}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-">
                       <Image
                         src={client.icon || "/icons/user_default_icon.png"}
                         alt={`${client.name}のアイコン`}
@@ -258,8 +258,8 @@ const Room = () => {
                     <div className="flex items-center text-xl">
                       <IoLocationOutline 
                         size={24} 
-                        color={`hsla(${hue}, 70%, 60%, 1)`} 
-                        className="mr-5"
+                        color={`hsla(${hue}, 70%, 60%, 0.8)`} 
+                        className="mr-3"
                       />
                       <span className="ml-1">{formatDistance(client.distance)}</span>
                     </div>
@@ -404,40 +404,40 @@ const Room = () => {
 
           <div className="h-[50vh] flex items-center justify-center">
             {/* 円と距離表示 */}
-            <div className="w-[40vh] h-[40vh] rounded-full border border-gray-100 flex items-center justify-center relative">
-              <div className="text-center">
-                <p
-                  className="text-xl text-gray-500"
-                  style={{ fontFamily: "NicoMoji" }}
-                >
-                  目的地まで
-                </p>
-                <p
-                  className="text-4xl font-semibold"
-                  style={{ color: "#7d7d7d" }}
-                >
-                  {formatDistance(distance)}
-                </p>
+            <div className=" mt-10 w-[45vh] h-[45vh] relative flex items-center justify-center">
+              {/* 矢印画像 */}
+              <div className="relative w-full h-full">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-[100%] h-[100%] relative">
+                    <Image
+                      src="/arrow.png"
+                      alt="方向を示す矢印"
+                      fill
+                      style={{
+                        transform: `rotate(${arrowRotation}deg)`,
+                        objectFit: 'contain'
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
-
-              {/* 矢印 */}
-              <div
-                className="absolute w-[30px] h-[30px] transform origin-bottom"
-                style={{
-                  top: "0%",
-                  left: "50%",
-                  transform: `rotate(${arrowRotation}deg) `, // arrowAngle で回転角度を指定
-                }}
-              >
-                {/* 矢印を作成 */}
-                <div
-                  className="w-0 h-0 border-l-16 border-r-16 border-b-32 border-transparent border-b-red-400"
-                  style={{
-                    position: "absolute",
-                    top: "0",
-                    left: "0",
-                  }}
-                ></div>
+              
+              {/* 中央に距離表示 */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center bg-white bg-opacity-70 rounded-full p-4">
+                  <p
+                    className="text-xl text-gray-500"
+                    style={{ fontFamily: "NicoMoji" }}
+                  >
+                    目的地まで
+                  </p>
+                  <p
+                    className="text-4xl font-semibold"
+                    style={{ color: "#7d7d7d" }}
+                  >
+                    {formatDistance(distance)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
