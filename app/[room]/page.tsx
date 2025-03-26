@@ -180,7 +180,7 @@ const Room = () => {
   const altitudeDisplay = showAltitude && (
     <div className="mt-2">
       <p className="text-lg text-gray-500" style={{ fontFamily: "NicoMoji" }}>
-        高さ {height > 0 ? `+${formatHeight(height)}` : formatHeight(height)}
+        高さ {height > 0 ? `+ ${formatHeight(height)}` : formatHeight(height)}
       </p>
     </div>
   );
