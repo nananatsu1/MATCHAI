@@ -301,7 +301,7 @@ const Room = () => {
           <div>
             <motion.button
               whileTap={{ scale: 0.8, rotate: -45 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
               onClick={openConfigModal}
               className="ml-15 px-3 py-3 rounded-4xl bg-white"
               style={{
@@ -333,7 +333,7 @@ const Room = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <motion.button
-                  whileTap={{ scale: 0.95 }}
+                  whileTap={{ scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   onClick={closeConfigModal}
                   className="absolute top-3 right-3 text-2xl text-gray-400"
@@ -446,7 +446,7 @@ const Room = () => {
           <div className="h-[15vh] justify-start items-center flex absolute mt-1">
             <div className="">
               <motion.button
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.8 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 onClick={handleExitRoom}
                 className="ml-7 px-4 py-2 rounded-4xl bg-white"
@@ -464,7 +464,7 @@ const Room = () => {
             <div>
               <motion.button
                 whileTap={{ scale: 0.8, rotate: -30 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                transition={{ type: "spring", stiffness: 400, damping: 15 }}
                 onClick={openConfigModal}
                 className="ml-15 px-3 py-3 rounded-4xl bg-white"
                 style={{
@@ -496,7 +496,7 @@ const Room = () => {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <motion.button
-                    whileTap={{ scale: 0.95 }}
+                    whileTap={{ scale: 0.8 }}
                     transition={{ type: "spring", stiffness: 300, damping: 15 }}
                     onClick={closeConfigModal}
                     className="absolute top-3 right-3 text-4xl text-gray-400"
@@ -526,7 +526,7 @@ const Room = () => {
                   {/* 表示切り替えボタン */}
                   <div className="mt-10 flex items-center justify-center space-x-4">
                     <motion.button
-                      whileTap={{ scale: 0.95 }}
+                      whileTap={{ scale: 0.8 }}
                       transition={{ type: "spring", stiffness: 300, damping: 15 }}
                       onClick={() => setIs3D(true)}
                       style={{
@@ -542,7 +542,7 @@ const Room = () => {
                       3D
                     </motion.button>
                     <motion.button
-                      whileTap={{ scale: 0.95 }}
+                      whileTap={{ scale: 0.8 }}
                       transition={{ type: "spring", stiffness: 300, damping: 15 }}
                       onClick={() => setIs3D(false)}
                       style={{
