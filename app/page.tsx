@@ -167,7 +167,7 @@ const Home = () => {
             {/* ユーザーアイコン */}
             <motion.button
               whileTap={{ scale: 0.8 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
               onClick={openUserModal}
               className="absolute top-4 left-5"
             >
@@ -183,7 +183,7 @@ const Home = () => {
             {/* 情報アイコン */}
             <motion.button
               whileTap={{ scale: 0.8, rotate: 10 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
               onClick={openInfoModal}
               className="absolute top-5 right-5"
             >
