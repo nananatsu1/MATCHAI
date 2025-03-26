@@ -52,19 +52,19 @@ const Home = () => {
   useEffect(() => {
     const checkIfPwa = () => {
       // スタンドアロンモード（ホーム画面から起動）かどうかをチェック
-      const isInStandaloneMode = () => 
-        window.matchMedia('(display-mode: standalone)').matches || 
-        (window.navigator as any).standalone || 
-        document.referrer.includes('android-app://');
-      
+      const isInStandaloneMode = () =>
+        window.matchMedia("(display-mode: standalone)").matches ||
+        (window.navigator as any).standalone ||
+        document.referrer.includes("android-app://");
+
       // PWAとして実行されていない場合はfalseに設定
       if (!isInStandaloneMode()) {
         setIsPwa(false);
       }
     };
-    
+
     // ページ読み込み完了後に判定
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       checkIfPwa();
     }
   }, []);
@@ -113,32 +113,32 @@ const Home = () => {
 
   const openInfoModal = () => {
     setShowInfoModal(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const closeInfoModal = () => {
     setShowInfoModal(false);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   const openUserModal = () => {
     setShowUserModal(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const closeUserModal = () => {
     setShowUserModal(false);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   const openPwaModal = () => {
     setShowPwaModal(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const closePwaModal = () => {
     setShowPwaModal(false);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   return (
@@ -208,6 +208,23 @@ const Home = () => {
               <div className="flex-grow border-t-2 border-gray-300"></div>
             </div>
             <AddRoomForm />
+            {/* PWA促進テキスト - PWAでない場合のみ表示 */}
+            {!isPwa && !loading && (
+              <div className="mt-20 left-0 right-0 flex justify-center">
+                <motion.button
+                  onClick={openPwaModal}
+                  whileTap={{ scale: 0.8 }}
+                  className="bg-white px-4 py-2 rounded-xl shadow-md"
+                  style={{
+                    fontFamily: "NicoMoji",
+                    color: "#7d7d7d",
+                    boxShadow: "2px 4px 2px #dee6ee",
+                  }}
+                >
+                  もっと快適に使うために
+                </motion.button>
+              </div>
+            )}
           </motion.div>
         )}
 
@@ -387,7 +404,7 @@ const Home = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <motion.button
-                  whileTap={{ scale: 0.95 }}
+                  whileTap={{ scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   onClick={closePwaModal}
                   className="absolute top-5 right-5"
@@ -414,29 +431,6 @@ const Home = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* PWA促進テキスト - PWAでない場合のみ表示 */}
-        {!isPwa && !loading && (
-          <motion.div 
-            className="fixed bottom-10 left-0 right-0 flex justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.5 }}
-          >
-            <motion.button
-              onClick={openPwaModal}
-              whileTap={{ scale: 0.95 }}
-              className="bg-white px-4 py-2 rounded-xl shadow-md"
-              style={{
-                fontFamily: "NicoMoji",
-                color: "#7d7d7d",
-                boxShadow: "2px 4px 2px #dee6ee",
-              }}
-            >
-              もっと快適に使うために
-            </motion.button>
-          </motion.div>
-        )}
       </div>
     </div>
   );
