@@ -1,8 +1,5 @@
 "use client";
 
-import useCalclation from "@/customhooks/useCalclation";
-
-import Arrow from "@/components/Arrow";
 import {
   CheckRole,
   getAllClients,
@@ -13,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import useGyroCompass from "@/customhooks/useGyroCompass";
 import useGeolocation from "@/customhooks/useGeolocation";
+import useCalclation from "@/customhooks/useCalclation";
 import { IoCopyOutline, IoCheckmarkOutline, IoSettingsOutline, IoLocationOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 import { motion, AnimatePresence } from "framer-motion";
@@ -172,7 +170,7 @@ const Room = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(roomData.pass);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1000);
+    setTimeout(() => setCopied(false), 1200);
   };
 
   if (userrole === "host") {
@@ -375,7 +373,6 @@ const Room = () => {
     // クライアント側の表示
     return (
       <div>
-        {/* <Arrow rotation={arrowRotation} /> */}
 
         <div className="relative h-screen bg-white">
           <div className="h-[20vh] px-4 py-25">
