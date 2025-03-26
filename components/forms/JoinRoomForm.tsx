@@ -70,6 +70,7 @@ const JoinRoomForm = () => {
               maxLength={1}
               readOnly
               onFocus={(e) => e.target.removeAttribute('readonly')}
+              onBlur={(e) => e.target.setAttribute('readonly', 'readonly')}
               className="w-18 h-22 border-2 rounded-2xl text-center text-4xl outline-none"
               style={{
                 borderColor: borderColors[index],

@@ -362,6 +362,7 @@ const Home = () => {
                     inputMode="text"
                     readOnly
                     onFocus={(e) => e.target.removeAttribute('readonly')}
+                    onBlur={(e) => e.target.setAttribute('readonly', 'readonly')}
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     placeholder="ユーザー名"
