@@ -5,16 +5,24 @@ import {
   joinRoom,
 } from "@/utils/supabaseFunction";
 import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 
 const JoinRoomForm = () => {
+  const searchParams = useSearchParams();
   const [password, setPassword] = useState(["", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const borderColors = ["#9fd8ee", "#c5e2c2", "#f7c6bd", "#c5a3cb"];
+
+  useEffect(() => {
+    const urlPassword = searchParams.get('password');
+    if (urlPassword && urlPassword.length === 4 && /^\d{4}$/.test(urlPassword)) {
+      setPassword(urlPassword.split(''));
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

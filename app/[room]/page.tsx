@@ -171,8 +171,9 @@ const Room = () => {
     document.body.style.overflow = 'auto';
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(roomData.pass);
+  const copyToClipboard = async () => {
+    const roomUrl = `${window.location.origin}/?password=${roomData.pass}`;
+    await navigator.clipboard.writeText(roomUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 1200);
   };
