@@ -35,10 +35,9 @@ const Room = () => {
   // 目的地の向きを計算
   useEffect(() => {
     if (angle !== null && rotation !== null) {
-        setArrowRotation(rotation);
+      setArrowRotation((angle - rotation + 360) % 360);
     }
-}, [angle, rotation]);
-
+  }, [angle, rotation]);
 
   //ユーザにロールを付与
   useEffect(() => {
