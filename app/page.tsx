@@ -254,12 +254,20 @@ const Home = () => {
                   <RxCross1 className="text-gray-400 text-xl" />
                 </motion.button>
 
-                <h3
-                  className="text-center text-2xl mb-4 mt-5"
-                  style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                >
-                  MATCHAIとは？
-                </h3>
+                <div className="flex items-center justify-center gap-3 mt-1">
+                  <Image
+                    src="/title.png"
+                    alt="MATCHAI"
+                    width={200}
+                    height={40}
+                  />
+                  <h3
+                    className="text-xl"
+                    style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
+                  >
+                    とは
+                  </h3>
+                </div>
 
                 <div
                   className="text-gray-600 space-y-4"
@@ -270,23 +278,23 @@ const Home = () => {
                     <br />
                     迷子になってもすぐに
                     <br />
-                    合流するためのアプリ！！
+                    合流するためのアプリです。
                   </p>
                   <p className="text-lg leading-relaxed">
                     集合場所に着いた人が
                     <br />
                     ルームを作成して、4桁の
                     <br />
-                    パスワードを他の人に共有！
+                    パスワードを共有します。
                   </p>
                   <p className="text-lg leading-relaxed">
                     他の人は共有された
                     <br />
                     パスワードを入力するだけで、
                     <br />
-                    ホストまでの方向と距離が
+                    ホストまで距離と、矢印で
                     <br />
-                    表示される！！
+                    方向が表示されます。
                   </p>
                 </div>
               </motion.div>
