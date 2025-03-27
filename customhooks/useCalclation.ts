@@ -50,21 +50,13 @@ const useCalclation = () => {
 
   const debouncedUpdate = useDebouncedCallback(async () => {
     const updatedLocations = await fetchLocations();
-    const diffDistance = getDistance(
-      myLatitude ?? 0, myLongitude ?? 0,
-      updatedLocations.myLatitude ?? 0, updatedLocations.myLongitude ?? 0
-    ) ?? 0;
-    if (diffDistance > 5) {
-      setDistance(diffDistance);
-      setMyLatitude(updatedLocations.myLatitude);
-      setMyLongitude(updatedLocations.myLongitude);
-      setMyAltitude(updatedLocations.myAltitude);
-      setHostLatitude(updatedLocations.hostLatitude);
-      setHostLongitude(updatedLocations.hostLongitude);
-      setHostAltitude(updatedLocations.hostAltitude);
-    }
-  
-  }, 8000); // 8秒間隔で更新
+    setMyLatitude(updatedLocations.myLatitude);
+    setMyLongitude(updatedLocations.myLongitude);
+    setMyAltitude(updatedLocations.myAltitude);
+    setHostLatitude(updatedLocations.hostLatitude);
+    setHostLongitude(updatedLocations.hostLongitude);
+    setHostAltitude(updatedLocations.hostAltitude);
+  }, 10000); // 10秒間隔で更新
 
   useEffect(() => {
     // 初回データ取得
