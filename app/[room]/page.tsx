@@ -237,7 +237,10 @@ const Room = () => {
         {/* 参加者一覧 */}
         <div className="mt-3 ml-4 mr-4 space-y-2 overflow-y-auto h-[55vh] border-3 border-gray-100 rounded-2xl p-4">
           {clientsData.length > 0 ? (
-            clientsData.map(
+            
+            clientsData
+            .sort((a: { id: any; }, b: { id: any; }) => (a.id ?? 0) - (b.id ?? 0)) 
+            .map(
               (client: {
                 id: number | null;
                 name: string | null;
