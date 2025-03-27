@@ -449,12 +449,6 @@ const Room = () => {
                   >
                     {formatDistance(distance)}
                   </p>
-                  <p
-                    className="text-xl text-gray-500"
-                    style={{ fontFamily: "NicoMoji" }}
-                  >
-                    {arrowRotation}度
-                  </p>
                   {altitudeDisplay}
                 </div>
               </div>
