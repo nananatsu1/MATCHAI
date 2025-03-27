@@ -35,8 +35,7 @@ const Room = () => {
   // 目的地の向きを計算
   useEffect(() => {
     if (angle !== null && rotation !== null) {
-        let diff = (angle - rotation + 540) % 360 - 180; // -180° ~ +180° に補正
-        setArrowRotation(rotation + diff);
+        setArrowRotation((angle - rotation + 540) % 360 - 180);
     }
 }, [angle, rotation]);
 
