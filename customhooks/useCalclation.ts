@@ -1,22 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchLocations, GetRealTimeLocations, setDistance } from "@/utils/supabaseFunction";
+import { fetchLocations, setDistance } from "@/utils/supabaseFunction";
 import { Geodesic } from "geographiclib";
-import { useDebouncedCallback } from 'use-debounce'; 
 
 const toRadians = (degrees: number) => degrees * (Math.PI / 180);
 const toDegrees = (radians: number) => radians * (180 / Math.PI);
 
 // 2点間の距離を計算
-const getDistance = (
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-) => {
+const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const geod = Geodesic.WGS84;
-
   const result = geod.Inverse(lat1, lon1, lat2, lon2);
   return result.s12; // 距離（メートル）
 };
@@ -48,17 +41,9 @@ const useCalclation = () => {
   const [hostLongitude, setHostLongitude] = useState<number | null>(null);
   const [hostAltitude, setHostAltitude] = useState<number | null>(null);
 
-  const debouncedUpdate = useDebouncedCallback(async () => {
-    const updatedLocations = await fetchLocations();
-    setMyLatitude(updatedLocations.myLatitude);
-    setMyLongitude(updatedLocations.myLongitude);
-    setMyAltitude(updatedLocations.myAltitude);
-    setHostLatitude(updatedLocations.hostLatitude);
-    setHostLongitude(updatedLocations.hostLongitude);
-    setHostAltitude(updatedLocations.hostAltitude);
-  }, 10000); // 10秒間隔で更新
-
   useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+
     // 初回データ取得
     const initialize = async () => {
       const locations = await fetchLocations();
@@ -68,36 +53,45 @@ const useCalclation = () => {
       setHostLatitude(locations.hostLatitude);
       setHostLongitude(locations.hostLongitude);
       setHostAltitude(locations.hostAltitude);
-
-      // Supabase Realtime の監視を開始
-      const subscription = GetRealTimeLocations(debouncedUpdate);
-      
-      return () => {
-        subscription.unsubscribe();
-        debouncedUpdate.cancel();
-      };
     };
+
     initialize();
-  }, [debouncedUpdate]);
+
+    // 5秒ごとに位置情報を更新
+    intervalId = setInterval(async () => {
+      const updatedLocations = await fetchLocations();
+      setMyLatitude(updatedLocations.myLatitude);
+      setMyLongitude(updatedLocations.myLongitude);
+      setMyAltitude(updatedLocations.myAltitude);
+      setHostLatitude(updatedLocations.hostLatitude);
+      setHostLongitude(updatedLocations.hostLongitude);
+      setHostAltitude(updatedLocations.hostAltitude);
+    }, 5000); // 5秒ごとに更新
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, []);
 
   const distance =
-    myLatitude && myLongitude && hostLatitude !== null && hostLongitude !== null
+    myLatitude !== null && myLongitude !== null && hostLatitude !== null && hostLongitude !== null
       ? getDistance(myLatitude, myLongitude, hostLatitude, hostLongitude)
       : 0;
-  if(distance){
+
+  if (distance) {
     setDistance(distance);
   }
-  
+
   const angle =
-    myLatitude && myLongitude && hostLatitude !== null && hostLongitude !== null
+    myLatitude !== null && myLongitude !== null && hostLatitude !== null && hostLongitude !== null
       ? getAngle(myLatitude, myLongitude, hostLatitude, hostLongitude)
       : 0;
-  
+
   const height =
-    myAltitude && hostAltitude !== null
+    myAltitude !== null && hostAltitude !== null
       ? getHeight(myAltitude, hostAltitude)
       : 0;
-  
+
   return { distance, angle, height };
 };
 

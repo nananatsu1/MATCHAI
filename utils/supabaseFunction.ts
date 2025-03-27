@@ -166,7 +166,7 @@ export const updateLocation = async (
 
 export const getMyLocation = async () => {
   const userid = localStorage.getItem("id");
-  const data = await supabase
+  const { data } = await supabase
     .from("user")
     .select("latitude, longitude, altitude")
     .eq("id", userid)
@@ -188,7 +188,7 @@ export const getHostLocation = async () => {
   const pass = mydata?.room_pass;
 
   // room_passがnullまたはundefinedの場合、nullを返す
-  if (pass === null || pass === undefined) {
+  if (!pass) {
     return null;
   }
 
@@ -209,38 +209,20 @@ export const fetchLocations = async () => {
   const hostLatestLocation = await getHostLocation();
 
   return {
-    myLatitude: myLatestLocation?.data?.latitude || null,
-    myLongitude: myLatestLocation?.data?.longitude || null,
-    myAltitude: myLatestLocation?.data?.altitude || null,
+    myLatitude: myLatestLocation?.latitude || null,
+    myLongitude: myLatestLocation?.longitude || null,
+    myAltitude: myLatestLocation?.altitude || null,
     hostLatitude: hostLatestLocation?.latitude || null,
     hostLongitude: hostLatestLocation?.longitude || null,
     hostAltitude: hostLatestLocation?.altitude || null,
   };
 };
 
-export const GetRealTimeLocations = (callback: () => void) => {
-  const subscription = supabase
-    .channel("user_location_changes")
-    .on(
-      "postgres_changes",
-      { event: "UPDATE", schema: "public", table: "user" },
-      (payload) => {
-        // 変更されたカラムをチェック
-        const updatedColumns = Object.keys(payload.new);
+// 5秒ごとにデータを更新する関数
+export const startLocationUpdateInterval = (callback: () => void) => {
+  const intervalId = setInterval(callback, 5000); // 5秒間隔で更新
 
-        // latitude, longitude, altitude のいずれかが更新された場合のみ callback を実行
-        if (
-          updatedColumns.includes("latitude") ||
-          updatedColumns.includes("longitude") ||
-          updatedColumns.includes("altitude")
-        ) {
-          callback();
-        }
-      }
-    )
-    .subscribe();
-
-  return subscription;
+  return () => clearInterval(intervalId); // 停止用の関数を返す
 };
 
 export const setDistance = async (distance: number) => {
@@ -250,6 +232,7 @@ export const setDistance = async (distance: number) => {
     .update({ distance: distance, update_at: new Date() })
     .eq("id", userid);
 };
+
 
 export const ResetData = async () => {
   const userid = localStorage.getItem("id");
