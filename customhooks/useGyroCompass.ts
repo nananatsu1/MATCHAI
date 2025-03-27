@@ -12,7 +12,7 @@ const useGyroCompass = () => {
     const [rotation, setRotation] = useState(0);
     const [direction, setDirection] = useState("北");
     const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
-    const prevRotation = useRef<number | null>(null);
+    const [prevRotation, setPrevRotation] = useState(0);
     const [declination, setDeclination] = useState(0);
 
     // useGeolocation フックで現在地を取得
@@ -105,13 +105,16 @@ const useGyroCompass = () => {
         degrees = (degrees + declination + 360) % 360;
 
         // スムージング処理（前回の値との補間）
-        if (prevRotation.current !== null) {
-            degrees = prevRotation.current * 0.9 + degrees * 0.1;
+        if (prevRotation !== null) {
+            degrees = prevRotation * 0.9 + degrees * 0.1;
         }
-        prevRotation.current = degrees;
 
-        setRotation(Math.round(degrees));
-        setDirection(getDirection(degrees));
+        let delta = degrees - prevRotation;
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+        setPrevRotation(prevRotation + delta);
+        setRotation(Math.round(prevRotation + delta));
+        setDirection(getDirection(prevRotation + delta));
     };
 
     // 画面の表示状態が変わった時の処理
