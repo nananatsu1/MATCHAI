@@ -1,6 +1,6 @@
 "use client";
 import { updateLocation } from "@/utils/supabaseFunction";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const useGeolocation = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -9,21 +9,15 @@ const useGeolocation = () => {
   const [error, setError] = useState<string | null>(null);
   const [isWatching, setIsWatching] = useState(false);
 
-  const watchIdRef = useRef<number | null>(null);
+  let intervalId: NodeJS.Timeout | null = null;
 
-  const startWatching = () => {
+  const fetchLocation = () => {
     if (!("geolocation" in navigator)) {
       setError("位置情報が取得できないブラウザのようです");
       return;
     }
 
-    const options = {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0,
-    };
-
-    watchIdRef.current = navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (position) => {
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
@@ -32,24 +26,34 @@ const useGeolocation = () => {
       (error) => {
         setError(error.message);
       },
-      options
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      }
     );
+  };
 
+  const startWatching = () => {
+    if (isWatching) return; // すでに実行中なら何もしない
     setIsWatching(true);
+
+    fetchLocation(); // 初回取得
+    intervalId = setInterval(fetchLocation, 1500); // 1.5秒ごとに取得
   };
 
   const stopWatching = () => {
-    if (watchIdRef.current !== null) {
-      navigator.geolocation.clearWatch(watchIdRef.current);
-      watchIdRef.current = null;
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
     }
     setIsWatching(false);
   };
 
   useEffect(() => {
     return () => {
-      if (watchIdRef.current !== null) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
+      if (intervalId) {
+        clearInterval(intervalId);
       }
     };
   }, []);
