@@ -106,8 +106,8 @@ const useGyroCompass = () => {
 
         // スムージング処理（前回の値との補間）
         if (prevRotation.current !== null) {
-            let diff = ((degrees - prevRotation.current + 540) % 360) - 180; // 最短回転方向を計算
-            degrees = prevRotation.current + diff * 0.1; // 10% の割合でスムージング
+            let diff = ((degrees - prevRotation.current + 540) % 360) - 180; // 最短回転方向
+            degrees = (prevRotation.current + diff * 0.1 + 360) % 360; // スムージング後も 0~359度に補正
         }
         prevRotation.current = degrees;
 
