@@ -113,7 +113,7 @@ const Room = () => {
   // 距離を整形する関数
   const formatDistance = (distance: number) => {
     if (distance >= 1000) {
-      return `${(distance / 1000).toFixed(1)} km`; // 小数第一位まで表示
+      return `${(distance / 1000).toFixed(2)} km`; // 小数第一位まで表示
     }
     return `${Math.round(distance)} m`; // 小数点なしで表示
   };
