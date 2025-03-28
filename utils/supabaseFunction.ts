@@ -42,21 +42,6 @@ export const getRoomData = async () => {
   return roomData.data;
 };
 
-export const getRealTimeClients = (callback: () => void) => {
-  const subscription = supabase
-    .channel("user_clients_changes")
-    .on(
-      "postgres_changes",
-      { event: "UPDATE", schema: "public", table: "user" },
-      () => {
-        callback();
-      }
-    )
-    .subscribe();
-
-  return subscription;
-};
-
 export const addUser = async (name: string) => {
   const { data } = await supabase
     .from("user")

@@ -18,10 +18,6 @@ import ShowDistance from "@/components/elements/client/ShowDistance";
 import ClientExit from "@/components/elements/client/CliwntExit";
 import ClientSettings from "@/components/elements/client/ClientSettings";
 
-
-
-
-
 const Room = () => {
   const router = useRouter();
   const [userrole, setUserrole] = useState<string | null>(null);
@@ -35,28 +31,15 @@ const Room = () => {
     const checkUserRole = async () => {
       const role = await CheckRole();
       setUserrole(role);
-    };
-    checkUserRole();
-  }, []);
-
-  //ユーザのロールを監視
-  useEffect(() => {
-    let subscription: any;
-
-    const handleRedirect = async () => {
       if (
         (userrole !== null && userrole !== "host" && userrole !== "client") ||
         localStorage.getItem("id") == null
       ) {
-        if (subscription) {
-          subscription.unsubscribe(); // リダイレクト前に解除
-        }
         router.push(`/`);
       }
     };
-
-    handleRedirect();
-  }, [userrole, router]);
+    checkUserRole();
+  }, []);
 
   useEffect(() => {
     let isMounted = true; // メモリリーク防止用フラグ

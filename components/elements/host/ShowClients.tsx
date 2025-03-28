@@ -1,17 +1,14 @@
 "use client";
 
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react'
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
-import { getAllClients, getRealTimeClients} from '@/utils/supabaseFunction';
+import { getAllClients } from "@/utils/supabaseFunction";
 
-import useGeolocation from '@/customhooks/useGeolocation';
-
-import { IoLocationOutline } from 'react-icons/io5';
+import { IoLocationOutline } from "react-icons/io5";
 
 const ShowClients = () => {
   const [clientsData, setClientsData] = useState<any>([]);
-  const { startWatching } = useGeolocation();
 
   // 距離を整形する関数
   const formatDistance = (distance: number) => {
@@ -22,38 +19,28 @@ const ShowClients = () => {
   };
 
   useEffect(() => {
-    let subscription: any;
+    let intervalId: NodeJS.Timeout | null = null;
 
-    const initialize = async () => {
+    const fetchClients = async () => {
       try {
-        await startWatching();
-
         const clientData = await getAllClients();
         if (clientData) {
           setClientsData(clientData);
-        } else {
         }
-
-        // Supabase Realtime の監視を開始
-        subscription = getRealTimeClients(() => {
-          const updateClients = async () => {
-            const updatedClientData = await getAllClients();
-            if (updatedClientData) {
-              setClientsData(updatedClientData);
-            }
-          };
-          updateClients();
-        });
       } catch (error) {
-        console.error("🚨 Error in initialize:", error);
+        console.error("🚨 Error fetching clients:", error);
       }
     };
 
-    initialize();
+    // 初回データ取得
+    fetchClients();
+
+    // 3秒ごとにデータを取得
+    intervalId = setInterval(fetchClients, 3000);
 
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
+      if (intervalId) {
+        clearInterval(intervalId);
       }
     };
   }, []);
@@ -62,10 +49,9 @@ const ShowClients = () => {
     <div>
       {/* 参加者一覧 */}
       <div className="mt-3 ml-4 mr-4 space-y-2 overflow-y-auto h-[55vh] border-3 border-gray-100 rounded-2xl p-4">
-          {clientsData.length > 0 ? (
-            
-            clientsData
-            .sort((a: { id: any; }, b: { id: any; }) => (a.id ?? 0) - (b.id ?? 0)) 
+        {clientsData.length > 0 ? (
+          clientsData
+            .sort((a: { id: any }, b: { id: any }) => (a.id ?? 0) - (b.id ?? 0))
             .map(
               (client: {
                 id: number | null;
@@ -74,7 +60,9 @@ const ShowClients = () => {
                 distance: number;
               }) => {
                 // IDを基に色相を生成（0-360度）
-                const hue = client.id ? ((client.id * 83) % 360 + (client.id * 157) % 180) % 360 : 0;
+                const hue = client.id
+                  ? (((client.id * 83) % 360) + ((client.id * 157) % 180)) % 360
+                  : 0;
                 return (
                   <div
                     key={client.id}
@@ -84,7 +72,7 @@ const ShowClients = () => {
                       fontFamily: "NicoMoji",
                       color: "#7d7d7d",
                       boxShadow: `8px 5px 4px hsla(${hue}, 80%, 80%, 0.2), 6px 3px 2px hsla(${hue}, 80%, 80%, 0.1)`,
-                      border: `1px solid hsla(${hue}, 60%, 85%, 0.8)`
+                      border: `1px solid hsla(${hue}, 60%, 85%, 0.8)`,
                     }}
                   >
                     <div className="flex items-center gap-">
@@ -99,29 +87,31 @@ const ShowClients = () => {
                     </div>
                     <div className="flex items-center text-xl">
                       <IoLocationOutline
-                        size={24} 
-                        color={`hsla(${hue}, 70%, 60%, 0.8)`} 
+                        size={24}
+                        color={`hsla(${hue}, 70%, 60%, 0.8)`}
                         className="mr-3"
                       />
-                      <span className="ml-1">{formatDistance(client.distance)}</span>
+                      <span className="ml-1">
+                        {formatDistance(client.distance)}
+                      </span>
                     </div>
                   </div>
                 );
               }
             )
-          ) : (
-            <div className="flex justify-center items-center h-[54vh] w-full">
-              <p
-                className="text-center text-xl "
-                style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-              >
-                参加者がまだいません
-              </p>
-            </div>
-          )}
-        </div>
+        ) : (
+          <div className="flex justify-center items-center h-[54vh] w-full">
+            <p
+              className="text-center text-xl "
+              style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
+            >
+              参加者がまだいません
+            </p>
+          </div>
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default ShowClients
+export default ShowClients;
