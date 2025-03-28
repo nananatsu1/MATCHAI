@@ -13,14 +13,14 @@ const ClientSettings = (props: {
 }) => {
   const [showConfigModal, setConfigModal] = useState(false);
   const [volume, setVolume] = useState(0.5);
-  const [play, { stop }] = useSound("/sonor.mp3", { volume, loop: false });
+  const [play, { stop }] = useSound("/sonor.mp3", { volume, loop: false, interrupt: true });
 
   const getDelay = (distance: number) => {
-    if (distance >= 500) return 1000;
-    if (distance >= 250) return 500;
-    if (distance >= 100) return 250;
-    if (distance >= 50) return 150;
-    if (distance >= 1) return 0;
+    if (distance >= 500) return 3000;
+    if (distance >= 250) return 1500;
+    if (distance >= 100) return 750;
+    if (distance >= 50) return 450;
+    if (distance >= 1) return 100;
     return null;
   };
 
@@ -35,6 +35,10 @@ const ClientSettings = (props: {
       };
       loopSound();
     }
+
+    return () => {
+      stop(); // コンポーネントがアンマウントされるときに音を止める
+    };
   }, [props.distance, volume]);
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
