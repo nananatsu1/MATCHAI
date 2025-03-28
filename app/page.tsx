@@ -1,47 +1,52 @@
 "use client";
-import JoinRoomForm from "@/components/forms/JoinRoomForm";
-import AddRoomForm from "@/components/forms/AddRoomForm";
+
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
 import DataInitialize from "@/components/function/DataInitialize";
 import ComfirmLocalStorage from "@/components/function/ComfirmLocalStorage";
-import { useEffect, useState } from "react";
 import RotatingSquares from "@/components/animation/loading";
-import { motion } from "framer-motion";
 import UserModal from "@/components/elements/home/UserProfile";
 import Info from "@/components/elements/home/Info";
+import JoinRoomForm from "@/components/forms/JoinRoomForm";
+import AddRoomForm from "@/components/forms/AddRoomForm";
 import Pwa from "@/components/elements/home/Pwa";
 
 const Home = () => {
+  const [fontsReady, setFontsReady] = useState(false);
+  const [timeoutDone, setTimeoutDone] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 2つの条件を満たすまで、loading状態を維持する
-    // 1. フォントがロードされたかどうか
-    // 2. 1秒以上経過したかどうか
-    let fontsReady = false;
-    let timeoutDone = false;
+    let isMounted = true; // クリーンアップ用のフラグ
 
-    const checkDone = () => {
-      // 2つの条件が両方満たされていれば、loading状態を解除
-      if (fontsReady && timeoutDone) {
-        setLoading(false);
-      }
-    };
-
-    // フォントがロードされたら、checkDoneを実行
+    // フォントのロードを監視
     document.fonts.ready.then(() => {
-      fontsReady = true;
-      checkDone();
+      if (isMounted) {
+        setFontsReady(true);
+      }
     });
 
-    // 1秒以上経過したら、checkDoneを実行
+    // 1秒後にタイムアウト
     const timer = setTimeout(() => {
-      timeoutDone = true;
-      checkDone();
+      if (isMounted) {
+        setTimeoutDone(true);
+      }
     }, 1000);
 
-    // タイマーをクリア
-    return () => clearTimeout(timer);
+    // クリーンアップ関数
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, []);
+
+  // 両方の条件を満たしたら loading を false にする
+  useEffect(() => {
+    if (fontsReady && timeoutDone) {
+      setLoading(false);
+    }
+  }, [fontsReady, timeoutDone]);
 
   return (
     <div>

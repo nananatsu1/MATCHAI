@@ -1,5 +1,8 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
 import { RxCross1 } from "react-icons/rx";
 
 const Pwa = () => {

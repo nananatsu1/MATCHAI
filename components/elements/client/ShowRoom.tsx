@@ -1,5 +1,8 @@
-import { getRoomData } from "@/utils/supabaseFunction";
+"use client";
+
 import React, { useEffect, useState } from "react";
+
+import { getRoomData } from "@/utils/supabaseFunction";
 
 const ShowRoom = () => {
   const [roomData, setRoomData] = useState<any>([]);

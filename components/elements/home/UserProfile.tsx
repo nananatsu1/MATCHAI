@@ -1,7 +1,11 @@
-import { getUserSettings, updateUserSettings, uploadUserIcon } from '@/utils/supabaseFunction';
+"use client";
+
+import React, { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react'
+
+import { getUserSettings, updateUserSettings, uploadUserIcon } from '@/utils/supabaseFunction';
+
 import { RxCross1 } from 'react-icons/rx';
 
 const UserModal = () => {

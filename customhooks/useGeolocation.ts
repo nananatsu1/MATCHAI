@@ -1,6 +1,8 @@
 "use client";
-import { updateLocation } from "@/utils/supabaseFunction";
+
 import { useState, useEffect } from "react";
+
+import { updateLocation } from "@/utils/supabaseFunction";
 
 const useGeolocation = () => {
   const [latitude, setLatitude] = useState<number | null>(null);

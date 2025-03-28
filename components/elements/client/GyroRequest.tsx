@@ -1,6 +1,9 @@
-import useGyroCompass from "@/customhooks/useGyroCompass";
+"use client";
+
 import React from "react";
 import { motion } from "framer-motion";
+
+import useGyroCompass from "@/customhooks/useGyroCompass";
 
 const GyroRequest = () => {
   const { permissionGranted, requestPermission } = useGyroCompass();

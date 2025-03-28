@@ -1,7 +1,10 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+
 import useCalclation from "@/customhooks/useCalclation";
 import useGyroCompass from "@/customhooks/useGyroCompass";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
 
 const ShowDistance = (props: { showAltitude: boolean }) => {
   const { distance = 0, angle = 0, height = 0 } = useCalclation();

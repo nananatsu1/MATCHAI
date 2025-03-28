@@ -1,5 +1,8 @@
-import { AnimatePresence, motion } from "framer-motion";
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
 import { IoSettingsOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 

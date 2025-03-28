@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+
 import useGeolocation from "./useGeolocation";
 
 interface DeviceOrientationEventWithCompass extends DeviceOrientationEvent {

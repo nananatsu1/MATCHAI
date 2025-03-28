@@ -1,22 +1,32 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { CheckRole } from "@/utils/supabaseFunction";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { CheckRole } from "@/utils/supabaseFunction";
+
 import useCalclation from "@/customhooks/useCalclation";
-import ShowClients from "@/components/elements/host/ShowClients";
-import ShowDistance from "@/components/elements/client/ShowDistance";
-import ClientSettings from "@/components/elements/client/ClientSettings";
-import HostSettings from "@/components/elements/host/HostSettings";
-import GyroRequest from "@/components/elements/client/GyroRequest";
-import HostExit from "@/components/elements/host/HostExit";
-import ClientExit from "@/components/elements/client/CliwntExit";
+
 import ShowRoomDetails from "@/components/elements/host/ShowRoomDetails";
+import ShowClients from "@/components/elements/host/ShowClients";
+import HostExit from "@/components/elements/host/HostExit";
+import HostSettings from "@/components/elements/host/HostSettings";
+
 import ShowRoom from "@/components/elements/client/ShowRoom";
+import GyroRequest from "@/components/elements/client/GyroRequest";
+import ShowDistance from "@/components/elements/client/ShowDistance";
+import ClientExit from "@/components/elements/client/CliwntExit";
+import ClientSettings from "@/components/elements/client/ClientSettings";
+
+
+
+
 
 const Room = () => {
   const router = useRouter();
   const [userrole, setUserrole] = useState<string | null>(null);
+  const [fontsReady, setFontsReady] = useState(false);
+  const [timeoutDone, setTimeoutDone] = useState(false);
   const { distance = 0 } = useCalclation();
   const [showAltitude, setShowAltitude] = useState(false);
 
@@ -49,18 +59,20 @@ const Room = () => {
   }, [userrole, router]);
 
   useEffect(() => {
-    let fontsReady = false;
-    let timeoutDone = false;
+    let isMounted = true; // メモリリーク防止用フラグ
 
     document.fonts.ready.then(() => {
-      fontsReady = true;
+      if (isMounted) setFontsReady(true);
     });
 
     const timer = setTimeout(() => {
-      timeoutDone = true;
+      if (isMounted) setTimeoutDone(true);
     }, 1000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   if (userrole === "host") {

@@ -1,7 +1,12 @@
-import useGeolocation from '@/customhooks/useGeolocation';
-import { getAllClients, getRealTimeClients} from '@/utils/supabaseFunction';
+"use client";
+
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
+
+import { getAllClients, getRealTimeClients} from '@/utils/supabaseFunction';
+
+import useGeolocation from '@/customhooks/useGeolocation';
+
 import { IoLocationOutline } from 'react-icons/io5';
 
 const ShowClients = () => {

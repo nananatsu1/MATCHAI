@@ -1,12 +1,14 @@
 "use client";
+
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+
 import {
   findPassword,
   isRoomLocking,
   joinRoom,
 } from "@/utils/supabaseFunction";
-import React, { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 
 const JoinRoomForm = () => {
   const searchParams = useSearchParams();

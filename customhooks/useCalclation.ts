@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import { fetchLocations, setDistance } from "@/utils/supabaseFunction";
 import { Geodesic } from "geographiclib";
 

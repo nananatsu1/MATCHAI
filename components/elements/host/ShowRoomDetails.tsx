@@ -1,5 +1,9 @@
-import { getRoomData } from "@/utils/supabaseFunction";
+"use client";
+
 import React, { useEffect, useState } from "react";
+
+import { getRoomData } from "@/utils/supabaseFunction";
+
 import { IoCheckmarkOutline, IoCopyOutline } from "react-icons/io5";
 
 const ShowRoomDetails = () => {

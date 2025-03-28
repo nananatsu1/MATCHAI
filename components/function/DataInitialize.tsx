@@ -1,6 +1,9 @@
 "use client";
-import { ResetData } from "@/utils/supabaseFunction";
+
 import { useEffect } from "react";
+
+import { ResetData } from "@/utils/supabaseFunction";
+
 import useGeolocation from "@/customhooks/useGeolocation";
 
 const DataInitialize = () => {

@@ -1,6 +1,8 @@
 "use client";
-import { addUser } from "@/utils/supabaseFunction";
+
 import { useEffect } from "react";
+
+import { addUser } from "@/utils/supabaseFunction";
 
 const ConfirmLocalStorage = () => {
 

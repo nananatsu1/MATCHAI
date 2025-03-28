@@ -1,7 +1,7 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 
 export default function RotatingSquares() {
   const [positionIndex, setPositionIndex] = useState(0)
