@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-
 import { IoSettingsOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
+import useSound from "use-sound";
 
 const ClientSettings = (props: {
   showAltitude: boolean;
@@ -13,23 +13,33 @@ const ClientSettings = (props: {
 }) => {
   const [showConfigModal, setConfigModal] = useState(false);
   const [volume, setVolume] = useState(0.5);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [play, { stop }] = useSound("/public/sonar.mp3", { volume, loop: false });
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume; // 音量を変更 (0-1の範囲に変換)
-    }
+  const getDelay = (distance: number) => {
+    if (distance >= 500) return 1000;
+    if (distance >= 250) return 500;
+    if (distance >= 100) return 250;
+    if (distance >= 50) return 150;
+    if (distance >= 1) return 0;
+    return null;
   };
 
   useEffect(() => {
-    if (props.distance <= 100) {
-      <audio ref={audioRef} controls>
-        <source src="@/public/sounds/" type="audio/mp3" />
-      </audio>;
+    stop(); // 既存の音を止める
+
+    const delay = getDelay(props.distance);
+    if (delay !== null) {
+      const loopSound = () => {
+        play();
+        setTimeout(loopSound, delay); // 指定した遅延でループ
+      };
+      loopSound();
     }
-  }, [props.distance]);
+  }, [props.distance, volume]);
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setVolume(Number(e.target.value));
+  };
 
   const openConfigModal = () => {
     setConfigModal(true);
@@ -44,22 +54,20 @@ const ClientSettings = (props: {
   return (
     <div>
       {/* 設定ボタン */}
-      <div>
-        <motion.button
-          whileTap={{ scale: 0.8, rotate: -45 }}
-          transition={{ type: "spring", stiffness: 400, damping: 15 }}
-          onClick={openConfigModal}
-          className="ml-15 px-3 py-3 rounded-4xl bg-white"
-          style={{
-            color: "#7d7d7d",
-            fontFamily: "NicoMoji",
-            boxShadow: "0 6px 3px #dee6ee",
-            border: "none",
-          }}
-        >
-          <IoSettingsOutline className="text-3xl text-gray-600" />
-        </motion.button>
-      </div>
+      <motion.button
+        whileTap={{ scale: 0.8, rotate: -45 }}
+        transition={{ type: "spring", stiffness: 400, damping: 15 }}
+        onClick={openConfigModal}
+        className="ml-15 px-3 py-3 rounded-4xl bg-white"
+        style={{
+          color: "#7d7d7d",
+          fontFamily: "NicoMoji",
+          boxShadow: "0 6px 3px #dee6ee",
+          border: "none",
+        }}
+      >
+        <IoSettingsOutline className="text-3xl text-gray-600" />
+      </motion.button>
 
       <AnimatePresence>
         {showConfigModal && (
