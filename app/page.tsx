@@ -3,143 +3,45 @@ import JoinRoomForm from "@/components/forms/JoinRoomForm";
 import AddRoomForm from "@/components/forms/AddRoomForm";
 import DataInitialize from "@/components/function/DataInitialize";
 import ComfirmLocalStorage from "@/components/function/ComfirmLocalStorage";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import RotatingSquares from "@/components/animation/loading";
-import { motion, AnimatePresence } from "framer-motion";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import { RxCross1 } from "react-icons/rx";
-import {
-  getUserSettings,
-  updateUserSettings,
-  uploadUserIcon,
-} from "@/utils/supabaseFunction";
-import Image from "next/image";
+import { motion } from "framer-motion";
+import UserModal from "@/components/elements/home/UserProfile";
+import Info from "@/components/elements/home/Info";
+import Pwa from "@/components/elements/home/Pwa";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [showUserModal, setShowUserModal] = useState(false);
-  const [showPwaModal, setShowPwaModal] = useState(false);
-  const [isPwa, setIsPwa] = useState(true); // デフォルトでtrueにして、判定後にfalseに変更
-  const [userName, setUserName] = useState("");
-  const [userIcon, setUserIcon] = useState("/icons/user_default_icon.png");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // 2つの条件を満たすまで、loading状態を維持する
+    // 1. フォントがロードされたかどうか
+    // 2. 1秒以上経過したかどうか
     let fontsReady = false;
     let timeoutDone = false;
 
     const checkDone = () => {
+      // 2つの条件が両方満たされていれば、loading状態を解除
       if (fontsReady && timeoutDone) {
         setLoading(false);
       }
     };
 
+    // フォントがロードされたら、checkDoneを実行
     document.fonts.ready.then(() => {
       fontsReady = true;
       checkDone();
     });
 
+    // 1秒以上経過したら、checkDoneを実行
     const timer = setTimeout(() => {
       timeoutDone = true;
       checkDone();
     }, 1000);
 
+    // タイマーをクリア
     return () => clearTimeout(timer);
   }, []);
-
-  // PWAとして実行されているかを判定
-  useEffect(() => {
-    const checkIfPwa = () => {
-      // スタンドアロンモード（ホーム画面から起動）かどうかをチェック
-      const isInStandaloneMode = () =>
-        window.matchMedia("(display-mode: standalone)").matches ||
-        (window.navigator as any).standalone ||
-        document.referrer.includes("android-app://");
-
-      // PWAとして実行されていない場合はfalseに設定
-      if (!isInStandaloneMode()) {
-        setIsPwa(false);
-      }
-    };
-
-    // ページ読み込み完了後に判定
-    if (typeof window !== "undefined") {
-      checkIfPwa();
-    }
-  }, []);
-
-  // ユーザー設定を読み込む
-  useEffect(() => {
-    const loadUserSettings = async () => {
-      const userId = localStorage.getItem("id");
-      if (userId) {
-        const settings = await getUserSettings(userId);
-        if (settings) {
-          setUserName(settings.name || "");
-          setUserIcon(settings.icon || "/icons/user_default_icon.png");
-        }
-      }
-    };
-    loadUserSettings();
-  }, []);
-
-  const handleIconClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const userId = localStorage.getItem("id");
-    if (!userId) return;
-    const file = e.target.files?.[0];
-    console.log("");
-    console.log(file);
-    if (file) {
-      e.target.value = ""; // 同じファイルの選択を許可する
-      const newIconUrl = await uploadUserIcon(userId, file);
-      if (newIconUrl) {
-        setUserIcon(newIconUrl);
-      }
-    }
-  };
-
-  const handleSaveSettings = async () => {
-    const userId = localStorage.getItem("id");
-    if (userId) {
-      await updateUserSettings(userId, userName, userIcon);
-      setShowUserModal(false);
-    }
-  };
-
-  const openInfoModal = () => {
-    setShowInfoModal(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeInfoModal = () => {
-    setShowInfoModal(false);
-    document.body.style.overflow = "auto";
-  };
-
-  const openUserModal = () => {
-    setShowUserModal(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeUserModal = () => {
-    setShowUserModal(false);
-    document.body.style.overflow = "auto";
-  };
-
-  const openPwaModal = () => {
-    setShowPwaModal(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const closePwaModal = () => {
-    setShowPwaModal(false);
-    document.body.style.overflow = "auto";
-  };
 
   return (
     <div>
@@ -165,30 +67,11 @@ const Home = () => {
             className="text-center"
           >
             {/* ユーザーアイコン */}
-            <motion.button
-              whileTap={{ scale: 0.8 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              onClick={openUserModal}
-              className="absolute top-4 left-5"
-            >
-              <Image
-                src={userIcon}
-                alt="User Icon"
-                width={55}
-                height={55}
-                className="rounded-full"
-              />
-            </motion.button>
+            <UserModal />
 
             {/* 情報アイコン */}
-            <motion.button
-              whileTap={{ scale: 0.8, rotate: 10 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              onClick={openInfoModal}
-              className="absolute top-5 right-5"
-            >
-              <IoIosInformationCircleOutline className="text-5xl text-gray-300" />
-            </motion.button>
+            <Info />
+
             <h3
               className="text-gray-600 text-4xl mb-12 font-nico"
               style={{ color: "#7d7d7d", fontFamily: "NicoMoji" }}
@@ -208,238 +91,9 @@ const Home = () => {
               <div className="flex-grow border-t-2 border-gray-300"></div>
             </div>
             <AddRoomForm />
-            {/* PWA促進テキスト - PWAでない場合のみ表示 */}
-            {!isPwa && !loading && (
-              <div className="mt-20 left-0 right-0 flex justify-center">
-                <motion.button
-                  onClick={openPwaModal}
-                  whileTap={{ scale: 0.8 }}
-                  className="bg-white px-4 py-2 rounded-xl shadow-md"
-                  style={{
-                    fontFamily: "NicoMoji",
-                    color: "#7d7d7d",
-                    boxShadow: "2px 4px 2px #dee6ee",
-                  }}
-                >
-                  もっと快適に使うために
-                </motion.button>
-              </div>
-            )}
+            <Pwa />
           </motion.div>
         )}
-
-        {/* 説明モーダル */}
-        <AnimatePresence>
-          {showInfoModal && (
-            <motion.div
-              className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50"
-              onClick={closeInfoModal}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.5, opacity: 0 }}
-                className="bg-[#f9f8f7] rounded-3xl p-8 w-80 shadow-lg relative"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <motion.button
-                  whileTap={{ scale: 0.8 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                  onClick={closeInfoModal}
-                  className="absolute top-5 right-5"
-                >
-                  <RxCross1 className="text-gray-400 text-xl" />
-                </motion.button>
-
-                <div className="flex items-center justify-center gap-3 mt-1">
-                  <Image
-                    src="/title.png"
-                    alt="MATCHAI"
-                    width={200}
-                    height={40}
-                  />
-                  <h3
-                    className="text-xl"
-                    style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                  >
-                    とは
-                  </h3>
-                </div>
-
-                <div
-                  className="text-gray-600 space-y-4"
-                  style={{ fontFamily: "NicoMoji" }}
-                >
-                  <p className="text-lg leading-relaxed">
-                    集合を簡単にしたり、
-                    <br />
-                    迷子になってもすぐに
-                    <br />
-                    合流するためのアプリです。
-                  </p>
-                  <p className="text-lg leading-relaxed">
-                    集合場所に着いた人が
-                    <br />
-                    ルームを作成して、4桁の
-                    <br />
-                    パスワードを共有します。
-                  </p>
-                  <p className="text-lg leading-relaxed">
-                    他の人は共有された
-                    <br />
-                    パスワードを入力するだけで、
-                    <br />
-                    ホストまで距離と、矢印で
-                    <br />
-                    方向が表示されます。
-                  </p>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ユーザー設定モーダル */}
-        <AnimatePresence>
-          {showUserModal && (
-            <motion.div
-              className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50"
-              onClick={closeUserModal}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.5, opacity: 0 }}
-                className="bg-[#f9f8f7] rounded-3xl p-8 w-80 shadow-lg relative"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                  onClick={closeUserModal}
-                  className="absolute top-5 right-5"
-                >
-                  <RxCross1 className="text-gray-400 text-xl" />
-                </motion.button>
-
-                <h3
-                  className="text-center text-2xl mb-6 mt-5"
-                  style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                >
-                  ユーザー設定
-                </h3>
-
-                <div className="flex flex-col items-center space-y-6">
-                  {/* アイコン選択 */}
-                  <div className="relative">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={handleIconClick}
-                      className="relative"
-                    >
-                      <Image
-                        src={userIcon}
-                        alt="User Icon"
-                        width={80}
-                        height={80}
-                        className="rounded-full"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-20 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                        <span className="text-white text-sm">変更</span>
-                      </div>
-                    </motion.button>
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                      accept="image/*"
-                      className="hidden"
-                    />
-                  </div>
-
-                  {/* ユーザー名入力 */}
-                  <input
-                    type="text"
-                    inputMode="text"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    placeholder="ユーザー名"
-                    className="w-full p-2 text-xl text-center bg-[#ddd] rounded-xl"
-                    style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                  />
-
-                  {/* 保存ボタン */}
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                    onClick={handleSaveSettings}
-                    className="w-full py-2 bg-white rounded-xl text-xl"
-                    style={{
-                      fontFamily: "NicoMoji",
-                      color: "#7d7d7d",
-                      boxShadow: "2px 6px 3px #dee6ee",
-                    }}
-                  >
-                    保存
-                  </motion.button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* PWAモーダル */}
-        <AnimatePresence>
-          {showPwaModal && (
-            <motion.div
-              className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50"
-              onClick={closePwaModal}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.5, opacity: 0 }}
-                className="bg-[#f9f8f7] rounded-3xl p-8 w-80 shadow-lg relative"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <motion.button
-                  whileTap={{ scale: 0.8 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                  onClick={closePwaModal}
-                  className="absolute top-5 right-5"
-                >
-                  <RxCross1 className="text-gray-400 text-xl" />
-                </motion.button>
-
-                <h3
-                  className="text-center text-2xl mb-6 mt-5"
-                  style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                >
-                  もっと快適に
-                </h3>
-
-                <div className="flex flex-col items-center">
-                  <p
-                    className="text-lg leading-relaxed text-center mb-4"
-                    style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                  >
-                    MATCHAIはPWAに対応しています。Webブラウザのメニューからホーム画面に追加をすることで、通知機能などが追加されてさらに快適に使うことができます。
-                  </p>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );

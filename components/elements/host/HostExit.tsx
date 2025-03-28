@@ -1,0 +1,31 @@
+import React from "react";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+
+const HostExit = () => {
+  const router = useRouter();
+  const handleExitRoom = () => {
+    router.push("/");
+  };
+
+  return (
+    <div>
+      <motion.button
+        whileTap={{ scale: 0.8 }}
+        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        onClick={handleExitRoom}
+        className="ml-7 px-4 py-2 rounded-4xl bg-white"
+        style={{
+          color: "#7d7d7d",
+          fontFamily: "NicoMoji",
+          boxShadow: "2px 6px 3px #dee6ee",
+          border: "none",
+        }}
+      >
+        <p className="text-3xl">← ルーム退出</p>
+      </motion.button>
+    </div>
+  );
+};
+
+export default HostExit;
