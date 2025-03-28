@@ -27,12 +27,12 @@ const Home = () => {
       }
     });
 
-    // 1秒後にタイムアウト
+    // 2秒後にタイムアウト
     const timer = setTimeout(() => {
       if (isMounted) {
         setTimeoutDone(true);
       }
-    }, 1000);
+    }, 2000);
 
     // クリーンアップ関数
     return () => {

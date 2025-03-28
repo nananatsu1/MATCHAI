@@ -93,7 +93,7 @@ const AddRoomForm = () => {
                   closeModal();
                   createRoom();
                 }}
-                whileTap={{ scale: 0.9, y: 2, boxShadow: "0 1px 1px #dee6ee" }}
+                whileTap={{ scale: 0.8, y: 2, boxShadow: "0 1px 1px #dee6ee" }}
                 transition={{ type: "spring", stiffness: 400, damping: 15 }}
                 className="mx-auto block px-4 py-2 text-2xl rounded-xl bg-white"
                 style={{
