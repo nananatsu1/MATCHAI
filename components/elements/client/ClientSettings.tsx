@@ -13,7 +13,7 @@ const ClientSettings = (props: {
 }) => {
   const [showConfigModal, setConfigModal] = useState(false);
   const [volume, setVolume] = useState(0.5);
-  const [play, { stop }] = useSound("/public/sonar.mp3", { volume, loop: false });
+  const [play, { stop }] = useSound("/sonor.mp3", { volume, loop: false });
 
   const getDelay = (distance: number) => {
     if (distance >= 500) return 1000;
