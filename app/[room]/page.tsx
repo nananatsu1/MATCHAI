@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { CheckRole } from "@/utils/supabaseFunction";
 
 import useCalclation from "@/customhooks/useCalclation";
+import useGeolocation from "@/customhooks/useGeolocation";
 
 import ShowRoomDetails from "@/components/elements/host/ShowRoomDetails";
 import ShowClients from "@/components/elements/host/ShowClients";
@@ -15,7 +16,7 @@ import HostSettings from "@/components/elements/host/HostSettings";
 import ShowRoom from "@/components/elements/client/ShowRoom";
 import GyroRequest from "@/components/elements/client/GyroRequest";
 import ShowDistance from "@/components/elements/client/ShowDistance";
-import ClientExit from "@/components/elements/client/CliwntExit";
+import ClientExit from "@/components/elements/client/ClientExit";
 import ClientSettings from "@/components/elements/client/ClientSettings";
 
 const Room = () => {
@@ -25,6 +26,7 @@ const Room = () => {
   const [timeoutDone, setTimeoutDone] = useState(false);
   const { distance = 0 } = useCalclation();
   const [showAltitude, setShowAltitude] = useState(false);
+  const { startWatching } = useGeolocation();
 
   //ユーザにロールを付与
   useEffect(() => {
@@ -36,13 +38,16 @@ const Room = () => {
         localStorage.getItem("id") == null
       ) {
         router.push(`/`);
+      }else{
+        startWatching();
       }
     };
     checkUserRole();
   }, []);
 
+  // フォントのセット
   useEffect(() => {
-    let isMounted = true; // メモリリーク防止用フラグ
+    let isMounted = true;
 
     document.fonts.ready.then(() => {
       if (isMounted) setFontsReady(true);
