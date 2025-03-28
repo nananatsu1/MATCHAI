@@ -71,18 +71,6 @@ const ShowDistance = (props: { showAltitude: boolean }) => {
               >
                 {formatDistance(distance)}
               </p>
-              <p
-                className="text-4xl font-semibold"
-                style={{ color: "#7d7d7d" }}
-              >
-                {angle}
-              </p>
-              <p
-                className="text-4xl font-semibold"
-                style={{ color: "#7d7d7d" }}
-              >
-                {rotation}
-              </p>
               {props.showAltitude ? (
                 <div className="mt-2">
                   <p

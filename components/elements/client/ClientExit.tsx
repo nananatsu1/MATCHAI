@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 const ClientExit = () => {
   const router = useRouter();
+
   const handleExitRoom = () => {
     router.push("/");
   };
