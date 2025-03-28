@@ -24,6 +24,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "three": "^0.174.0",
+    "ts-node": "^10.9.2",
     "use-debounce": "^10.0.4",
     "uuid": "^11.1.0"
   },
@@ -40,6 +41,6 @@
     "eslint-config-next": "15.2.2",
     "secretlint": "^9.2.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5.8.2"
   }
 }
