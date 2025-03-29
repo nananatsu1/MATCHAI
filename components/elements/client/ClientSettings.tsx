@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoSettingsOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
-import useSound from "use-sound";
+import { Howl } from "howler";
 
 const ClientSettings = (props: {
   showAltitude: boolean;
@@ -13,33 +13,53 @@ const ClientSettings = (props: {
 }) => {
   const [showConfigModal, setConfigModal] = useState(false);
   const [volume, setVolume] = useState(0.5);
-  const [play, { stop }] = useSound("/sonor.mp3", { volume, loop: false, interrupt: true });
+  const soundRef = useRef<Howl | null>(null);
 
-  const getDelay = (distance: number) => {
+  const delay = useMemo(() => {
+    const distance = props.distance;
     if (distance >= 500) return 3000;
     if (distance >= 250) return 1500;
     if (distance >= 100) return 750;
     if (distance >= 50) return 450;
     if (distance >= 1) return 100;
     return null;
-  };
+  }, [props.distance]);
 
   useEffect(() => {
-    stop(); // 既存の音を止める
-
-    const delay = getDelay(props.distance);
     if (delay !== null) {
-      const loopSound = () => {
-        play();
-        setTimeout(loopSound, delay); // 指定した遅延でループ
-      };
-      loopSound();
+      if (soundRef.current) {
+        soundRef.current.stop();
+      }
+
+      soundRef.current = new Howl({
+        src: ["/sonor.mp3"],
+        volume,
+        loop: true,
+        onend: () => {
+          if (soundRef.current) {
+            soundRef.current.play();
+          }
+        },
+        onloaderror: (id, error) => {
+          console.error("音声ファイルの読み込みに失敗しました:", error);
+        },
+      });
+
+      soundRef.current.play();
     }
 
     return () => {
-      stop(); // コンポーネントがアンマウントされるときに音を止める
+      if (soundRef.current) {
+        soundRef.current.stop();
+      }
     };
-  }, [props.distance, volume]);
+  }, [delay, volume]);
+
+  useEffect(() => {
+    if (soundRef.current) {
+      soundRef.current.volume(volume);
+    }
+  }, [volume]);
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setVolume(Number(e.target.value));
