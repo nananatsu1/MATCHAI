@@ -14,7 +14,6 @@ import HostExit from "@/components/elements/host/HostExit";
 import HostSettings from "@/components/elements/host/HostSettings";
 
 import ShowRoom from "@/components/elements/client/ShowRoom";
-import GyroRequest from "@/components/elements/client/GyroRequest";
 import ShowDistance from "@/components/elements/client/ShowDistance";
 import ClientExit from "@/components/elements/client/ClientExit";
 import ClientSettings from "@/components/elements/client/ClientSettings";
