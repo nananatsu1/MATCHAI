@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 import useCalclation from "@/customhooks/useCalclation";
 import useGyroCompass from "@/customhooks/useGyroCompass";
 
 const ShowDistance = (props: { showAltitude: boolean }) => {
   const { distance = 0, angle = 0, height = 0 } = useCalclation();
-  const { rotation } = useGyroCompass();
+  const { permissionGranted, requestPermission, rotation } = useGyroCompass();
   const [arrowRotation, setArrowRotation] = useState<number>(0);
 
   // 目的地の向きを計算
@@ -36,6 +37,23 @@ const ShowDistance = (props: { showAltitude: boolean }) => {
 
   return (
     <div>
+      <div className="flex justify-center min-h-[5vh]">
+      {!permissionGranted && (
+        <motion.button
+          whileTap={{ scale: 0.8 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15 }}
+          onClick={requestPermission}
+          className="px-4 py-2 flex items-center justify-center text-center bg-blue-100 text-gray-600 rounded-2xl text-xl"
+          style={{
+            fontFamily: "NicoMoji",
+            boxShadow: "0 6px 3px #6495ed",
+            border: "none",
+          }}
+        >
+          センサーの許可
+        </motion.button>
+      )}
+    </div>
       <div className="h-[50vh] flex items-center justify-center">
         {/* 円と距離表示 */}
         <div className=" mt-10 w-[45vh] h-[45vh] relative flex items-center justify-center">

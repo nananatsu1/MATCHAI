@@ -91,7 +91,7 @@ const Room = () => {
           <ShowRoom />
 
           {/* センサー許可 */}
-          <GyroRequest />
+          {/* <GyroRequest /> */}
 
           {/* 距離表示 */}
           <ShowDistance showAltitude={showAltitude} />
