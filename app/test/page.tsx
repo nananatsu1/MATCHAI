@@ -4,11 +4,9 @@ import React from "react";
 import { motion } from "framer-motion";
 
 import useGyroCompass from "@/customhooks/useGyroCompass";
-import useCalclation from "@/customhooks/useCalclation";
 
 const test = () => {
-  const { permissionGranted, requestPermission } = useGyroCompass();
-  const { angle = 0 } = useCalclation();
+  const { permissionGranted, requestPermission, rotation } = useGyroCompass();
   return (
     <div className="justify-center items-center">
       {!permissionGranted && (
@@ -26,7 +24,7 @@ const test = () => {
           センサーの許可
         </motion.button>
       )}
-      {angle}
+      {rotation}
     </div>
   );
 };
