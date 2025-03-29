@@ -90,10 +90,7 @@ const Room = () => {
           {/* ルーム名 */}
           <ShowRoom />
 
-          {/* センサー許可 */}
-          {/* <GyroRequest /> */}
-
-          {/* 距離表示 */}
+          {/* 距離と角度表示 */}
           <ShowDistance showAltitude={showAltitude} />
 
           <div className="h-[15vh] justify-start items-center flex absolute mt-1">
