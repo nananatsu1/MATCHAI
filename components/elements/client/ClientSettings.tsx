@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoSettingsOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
-import { Howl } from "howler";
 
 const ClientSettings = (props: {
   showAltitude: boolean;
@@ -13,56 +12,49 @@ const ClientSettings = (props: {
 }) => {
   const [showConfigModal, setConfigModal] = useState(false);
   const [volume, setVolume] = useState(0.5);
-  const soundRef = useRef<Howl | null>(null);
-
-  const delay = useMemo(() => {
-    const distance = props.distance;
-    if (distance >= 500) return 3000;
-    if (distance >= 250) return 1500;
-    if (distance >= 100) return 750;
-    if (distance >= 50) return 450;
-    if (distance >= 1) return 100;
-    return null;
-  }, [props.distance]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isMounted = useRef(false); // マウント状態を記録
 
   useEffect(() => {
-    if (delay !== null) {
-      if (soundRef.current) {
-        soundRef.current.stop();
-      }
-
-      soundRef.current = new Howl({
-        src: ["/sonor.mp3"],
-        volume,
-        loop: true,
-        onend: () => {
-          if (soundRef.current) {
-            soundRef.current.play();
-          }
-        },
-        onloaderror: (id, error) => {
-          console.error("音声ファイルの読み込みに失敗しました:", error);
-        },
-      });
-
-      soundRef.current.play();
-    }
+    isMounted.current = true; // コンポーネントがマウントされた
 
     return () => {
-      if (soundRef.current) {
-        soundRef.current.stop();
+      isMounted.current = false; // アンマウント時にフラグをリセット
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
       }
     };
-  }, [delay, volume]);
+  }, []);
 
   useEffect(() => {
-    if (soundRef.current) {
-      soundRef.current.volume(volume);
+    if (!isMounted.current) return; // ページ遷移時の誤作動を防ぐ
+
+    // すでに音が流れていたら停止
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
-  }, [volume]);
+
+    // distance が 5m ～ 30m の間なら音を再生
+    if (props.distance >= 5 && props.distance <= 30) {
+      const audio = new Audio("/sonar.mp3");
+      audio.volume = volume;
+      audio.loop = true;
+      audio.play();
+      
+      // audioRef を更新
+      audioRef.current = audio;
+    }
+  }, [props.distance, volume]);
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVolume(Number(e.target.value));
+    const newVolume = Number(e.target.value);
+    setVolume(newVolume);
+
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+    }
   };
 
   const openConfigModal = () => {
