@@ -11,7 +11,6 @@ interface DeviceOrientationEventWithCompass extends DeviceOrientationEvent {
 
 const useGyroCompass = () => {
     const [rotation, setRotation] = useState(0);
-    const [direction, setDirection] = useState("北");
     const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
     const prevRotation = useRef<number | null>(null);
     const [declination, setDeclination] = useState(0);
@@ -113,7 +112,6 @@ const useGyroCompass = () => {
         prevRotation.current = degrees;
 
         setRotation(Math.round(degrees));
-        setDirection(getDirection(degrees));
     };
 
     // 画面の表示状態が変わった時の処理
@@ -125,13 +123,7 @@ const useGyroCompass = () => {
         }
     };
 
-    // 方角を取得
-    const getDirection = (degrees: number): string => {
-        const directions = ["北", "北東", "東", "南東", "南", "南西", "西", "北西"];
-        return directions[Math.round(degrees / 45) % 8] || "不明";
-    };
-
-    return { rotation, direction, permissionGranted, requestPermission, error };
+    return { rotation, permissionGranted, requestPermission, error };
 };
 
 export default useGyroCompass;
