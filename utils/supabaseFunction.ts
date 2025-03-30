@@ -226,6 +226,82 @@ export const setDistance = async (distance: number) => {
     .eq("id", userid);
 };
 
+export const getAllMessages = async () => {
+  const userid = localStorage.getItem("id");
+
+  // room_passを取得
+  const { data: mydata } = await supabase
+    .from("user")
+    .select("room_pass")
+    .eq("id", userid)
+    .single();
+
+  const pass = mydata?.room_pass;
+
+  // room_passがnullまたはundefinedの場合、nullを返す
+  if (!pass) {
+    return null;
+  }
+
+  // room_passが一致するメッセージを取得
+  const { data } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("room_pass", pass)
+
+  return data || [];
+};
+
+export const addMessages = async (message: string, roomPass: number) => {
+  const userid = localStorage.getItem("id");
+  await supabase
+    .from("messages")
+    .insert({
+      user_id: userid,
+      room_pass: roomPass,
+      message: message,
+      created_at: new Date(),
+    });
+};
+
+export const getUserRoomPass = async (): Promise<number | null> => {
+  const userid = localStorage.getItem("id");
+  const { data, error } = await supabase
+    .from("user")
+    .select("room_pass")
+    .eq("id", userid)
+    .single();
+
+  if (error) {
+    console.error("Room Passの取得エラー:", error);
+    return null;
+  }
+
+  return data?.room_pass || null;
+};
+
+export const subscribeToMessages = (
+  roomPass: number,
+  callback: (message: any) => void
+) => {
+  const subscription = supabase
+    .channel("realtime-messages") // 任意のチャネル名
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "messages" },
+      (payload) => {
+        const newMessage = payload.new;
+        if (newMessage.room_pass === roomPass) {
+          callback(newMessage);
+        }
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(subscription); // クリーンアップ
+  };
+};
 
 export const ResetData = async () => {
   const userid = localStorage.getItem("id");
