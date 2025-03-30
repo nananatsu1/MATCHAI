@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.3",
+    "@supabase/supabase-js": "^2.49.4",
     "@uidotdev/usehooks": "^2.4.1",
     "firebase": "^11.4.0",
     "framer-motion": "^12.5.0",

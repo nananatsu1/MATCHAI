@@ -5,26 +5,22 @@ import { useRouter } from "next/navigation";
 
 import { CheckRole } from "@/utils/supabaseFunction";
 
-import useCalclation from "@/customhooks/useCalclation";
 import useGeolocation from "@/customhooks/useGeolocation";
 
 import ShowRoomDetails from "@/components/elements/host/ShowRoomDetails";
 import ShowClients from "@/components/elements/host/ShowClients";
 import HostExit from "@/components/elements/host/HostExit";
-import HostSettings from "@/components/elements/host/HostSettings";
 
 import ShowRoom from "@/components/elements/client/ShowRoom";
 import ShowDistance from "@/components/elements/client/ShowDistance";
 import ClientExit from "@/components/elements/client/ClientExit";
-import ClientSettings from "@/components/elements/client/ClientSettings";
+import ChatModal from "@/components/elements/ChatModal";
 
 const Room = () => {
   const router = useRouter();
   const [userrole, setUserrole] = useState<string | null>(null);
   const [fontsReady, setFontsReady] = useState(false);
   const [timeoutDone, setTimeoutDone] = useState(false);
-  const { distance = 0 } = useCalclation();
-  const [showAltitude, setShowAltitude] = useState(false);
   const { startWatching } = useGeolocation();
 
   //ユーザにロールを付与
@@ -76,8 +72,8 @@ const Room = () => {
           {/* 退出ボタン */}
           <HostExit />
 
-          {/* 設定ボタン */}
-          <HostSettings distance={distance} />
+          {/* チャットボタン */}
+          <ChatModal/>
         </div>
       </div>
     );
@@ -90,18 +86,14 @@ const Room = () => {
           <ShowRoom />
 
           {/* 距離と角度表示 */}
-          <ShowDistance showAltitude={showAltitude} />
+          <ShowDistance />
 
           <div className="h-[15vh] justify-start items-center flex absolute mt-1">
             {/* 退出ボタン */}
             <ClientExit />
 
-            {/* 設定ボタン */}
-            <ClientSettings
-              showAltitude={showAltitude}
-              setShowAltitude={setShowAltitude}
-              distance={distance}
-            />
+            {/* チャットボタン */}
+            <ChatModal/>
           </div>
         </div>
       </div>

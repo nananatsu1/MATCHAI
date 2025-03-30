@@ -43,12 +43,20 @@ export const getRoomData = async () => {
 };
 
 export const addUser = async (name: string) => {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("user")
     .insert({ name: name })
     .select()
     .single();
 
+  console.log("nice");
+
+  if (error) {
+    console.error("Error adding user:", error.message);
+    throw error;
+  }
+
+  console.log(data);
   return data.id;
 };
 
@@ -253,19 +261,17 @@ export const updateUserSettings = async (
 
 // ユーザー設定の取得
 export const getUserSettings = async (userId: string) => {
-  try {
     const { data, error } = await supabase
       .from("user")
       .select("name, icon")
       .eq("id", userId)
       .single();
 
-    if (error) throw error;
+    if (error){
+      console.error("Error fetching user settings:", error.message);
+      return null;
+    } 
     return data;
-  } catch (error) {
-    console.error("Error fetching user settings:", error);
-    return null;
-  }
 };
 
 // 画像のアップロード
