@@ -9,6 +9,7 @@ import { addMessages, getAllMessages, getUserRoomPass, subscribeToMessages } fro
 export type Message = {
   id: number;
   user_id: number;
+  user_name: string;
   room_pass: number;
   created_at: string;
   message: string;
@@ -19,13 +20,15 @@ const ChatModal = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [roomPass, setRoomPass] = useState<number | null>(null);
-  const userId = Number(localStorage.getItem("id")); // userIdを数値型に変換
+  const userId = Number(localStorage.getItem("id"));
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
       const data = await getAllMessages();
-      if (data) setMessages(data);
+      if (data){
+        setMessages(data)
+      };
     };
     fetchMessages();
   }, []);
@@ -115,7 +118,11 @@ const ChatModal = () => {
                         : "bg-gray-500"
                     }`}
                   >
-                    {message.message}
+                    <div className="text-xs text-gray-300">
+                      <span>{message.user_name}</span>
+                      <span className="ml-2">{new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                    <div>{message.message}</div>
                   </div>
                 ))}
                 <div ref={chatEndRef} />

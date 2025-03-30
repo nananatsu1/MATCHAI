@@ -254,10 +254,17 @@ export const getAllMessages = async () => {
 
 export const addMessages = async (message: string, roomPass: number) => {
   const userid = localStorage.getItem("id");
+const { data: name } = await supabase
+  .from("user")
+  .select("name")
+  .eq("id", userid)
+  .single();
+
   await supabase
     .from("messages")
     .insert({
       user_id: userid,
+      user_name: name?.name,
       room_pass: roomPass,
       message: message,
       created_at: new Date(),
