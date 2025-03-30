@@ -12,7 +12,7 @@ async function resetTables() {
   const sixHoursAgo = new Date(currentDate.getTime() - 6 * 60 * 60 * 1000);
   const { data: rooms, error: roomsError } = await supabase
     .from('room')
-    .select('id')
+    .select('pass')
     .lt('update_at', sixHoursAgo.toISOString()); // 6 時間前より古いレコードを取得
 
   if (roomsError) {
@@ -21,16 +21,16 @@ async function resetTables() {
   }
 
   if (rooms?.length > 0) {
-    const roomIds = rooms.map((room) => room.id);
+    const roomPass = rooms.map((room) => room.pass);
     const { error: deleteRoomsError } = await supabase
       .from('room')
       .delete()
-      .in('id', roomIds);
+      .in('pass', roomPass);
 
     if (deleteRoomsError) {
       console.error('Error deleting rooms:', deleteRoomsError);
     } else {
-      console.log(`Successfully deleted ${roomIds.length} rooms.`);
+      console.log(`Successfully deleted ${roomPass.length} rooms.`);
     }
   }
 
