@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { addUser, getUserById } from "@/utils/supabaseFunction"; // getUserById関数を追加でインポート
+import { addUser, getUserById, updateUser } from "@/utils/supabaseFunction"; // getUserById関数を追加でインポート
 
 const ConfirmLocalStorage = () => {
 
@@ -11,12 +11,13 @@ const ConfirmLocalStorage = () => {
 
       if (existId) {
         // idがlocalStorageにある場合、userテーブルにそのidが存在するか確認
-        const { data: existingUser, error: userError } = await getUserById(existId);
+        const existingUser = await getUserById(existId);
+        console.log(existingUser);
 
-        if (userError || !existingUser) {
+        if (!existingUser) {
           // idに対応するユーザーがいない場合、新規ユーザーを作成
-          const userId = await addUser("Guest");
-          await localStorage.setItem("id", userId);
+          console.log("New user created");
+          await updateUser(existId, "Guest");
         }
       } else {
         // idがない場合、新規ユーザーを作成

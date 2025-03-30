@@ -43,18 +43,39 @@ export const getRoomData = async () => {
 };
 
 export const getUserById = async (id: string) => {
+  console.log(id);
   const { data, error } = await supabase
     .from("user")
     .select("*")
     .eq("id", id)
+    .single();  // 単一のレコードのみ取得
+
+  // エラーが発生した場合
+  if (error) {
+    console.error('Error fetching user:', error.message);
+    return false;
+  }
+
+  if (!data) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const updateUser = async (id: number, name: string) => {
+  const { data, error } = await supabase
+    .from("user")
+    .insert({ id: id, name: name })
+    .select()
     .single();
 
   if (error) {
-    console.error("Error fetching user by id:", error.message);
-    return null;
+    console.error("Error updating user:", error.message);
+    throw error;
   }
 
-  return data;
+  return data.id;
 };
 
 export const addUser = async (name: string) => {
@@ -64,14 +85,11 @@ export const addUser = async (name: string) => {
     .select()
     .single();
 
-  console.log("nice");
-
   if (error) {
     console.error("Error adding user:", error.message);
     throw error;
   }
 
-  console.log(data);
   return data.id;
 };
 
