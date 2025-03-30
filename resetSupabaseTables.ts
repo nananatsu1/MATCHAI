@@ -8,7 +8,7 @@ async function resetTables() {
   // 現在時刻を取得
   const currentDate = new Date();
 
-  // room テーブルの update_at が 6 時間前のレコードを削除
+  // roomテーブルのupdate_atが6時間前のレコードを削除
   const sixHoursAgo = new Date(currentDate.getTime() - 6 * 60 * 60 * 1000);
   const { data: rooms, error: roomsError } = await supabase
     .from('room')
@@ -22,6 +22,21 @@ async function resetTables() {
 
   if (rooms?.length > 0) {
     const roomPass = rooms.map((room) => room.pass);
+
+    // 対応するmessagesを削除
+    const { error: deleteMessagesError } = await supabase
+      .from('messages')
+      .delete()
+      .in('room_pass', roomPass);  // messagesテーブルのroom_passがroom.passと一致するレコードを削除
+
+    if (deleteMessagesError) {
+      console.error('Error deleting messages:', deleteMessagesError);
+      return;
+    } else {
+      console.log(`Successfully deleted messages for ${roomPass.length} rooms.`);
+    }
+
+    // roomテーブルのレコードを削除
     const { error: deleteRoomsError } = await supabase
       .from('room')
       .delete()
@@ -34,7 +49,7 @@ async function resetTables() {
     }
   }
 
-  // user テーブルの update_at が 30 日前のレコードを削除
+  // userテーブルのupdate_atが30日前のレコードを削除
   const thirtyDaysAgo = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000);
   const { data: users, error: usersError } = await supabase
     .from('user')
