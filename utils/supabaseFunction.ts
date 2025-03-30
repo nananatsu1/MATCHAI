@@ -42,6 +42,21 @@ export const getRoomData = async () => {
   return roomData.data;
 };
 
+export const getUserById = async (id: string) => {
+  const { data, error } = await supabase
+    .from("user")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error("Error fetching user by id:", error.message);
+    return null;
+  }
+
+  return data;
+};
+
 export const addUser = async (name: string) => {
   const { data, error } = await supabase
     .from("user")
