@@ -19,10 +19,16 @@ jobs:
           node-version: '22.14.0'  # Node.js のバージョンを設定
 
       - name: Install dependencies
-        run: npm install  # 依存関係をインストール
+        run: |
+          npm install
+          npm install -g typescript
 
-      - name: Run Supabase Reset Script
-        run: node resetSupabaseTables.ts  # 作成した TypeScript スクリプトを実行
+      - name: Compile TypeScript
+        run: tsc resetSupabaseTables.ts --outDir dist  # TypeScriptファイルをコンパイル
+
+      - name: Run Supabase table reset script
+        run: node dist/resetSupabaseTables.js  # コンパイルされたJavaScriptを実行
+        
         env:
           SUPABASE_URL: ${process.env.NEXT_PUBLIC_SUPABASE_URL}
           SUPABASE_ANON_KEY: ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}
