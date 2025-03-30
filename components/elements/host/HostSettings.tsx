@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { IoSettingsOutline } from "react-icons/io5";
@@ -10,24 +10,6 @@ const HostSettings = (props: {
   distance: number;
 }) => {
   const [showConfigModal, setConfigModal] = useState(false);
-  const [volume, setVolume] = useState(0.5);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume; // 音量を変更 (0-1の範囲に変換)
-    }
-  };
-
-  useEffect(() => {
-    if (props.distance <= 100) {
-      <audio ref={audioRef} controls>
-        <source src="@/public/sounds/" type="audio/mp3" />
-      </audio>;
-    }
-  }, [props.distance]);
 
   const openConfigModal = () => {
     setConfigModal(true);
@@ -86,22 +68,6 @@ const HostSettings = (props: {
               <p className="flex items-center justify-center font-semibold text-gray-600 text-2xl">
                 設定
               </p>
-              {/* 音量調整 */}
-              <div className="flex mt-8">
-                <p className="text-center text-xl text-gray-600 ml-5">音量</p>
-
-                <input
-                  type="range"
-                  id="volume"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                  className="ml-12"
-                />
-              </div>
             </motion.div>
           </motion.div>
         )}

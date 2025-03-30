@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoSettingsOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
@@ -11,51 +11,6 @@ const ClientSettings = (props: {
   distance: number;
 }) => {
   const [showConfigModal, setConfigModal] = useState(false);
-  const [volume, setVolume] = useState(0.5);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const isMounted = useRef(false); // マウント状態を記録
-
-  useEffect(() => {
-    isMounted.current = true; // コンポーネントがマウントされた
-
-    return () => {
-      isMounted.current = false; // アンマウント時にフラグをリセット
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted.current) return; // ページ遷移時の誤作動を防ぐ
-
-    // すでに音が流れていたら停止
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-
-    // distance が 5m ～ 30m の間なら音を再生
-    if (props.distance >= 5 && props.distance <= 30) {
-      const audio = new Audio("/sonar.mp3");
-      audio.volume = volume;
-      audio.loop = true;
-      audio.play();
-      
-      // audioRef を更新
-      audioRef.current = audio;
-    }
-  }, [props.distance, volume]);
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number(e.target.value);
-    setVolume(newVolume);
-
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-  };
 
   const openConfigModal = () => {
     setConfigModal(true);
@@ -112,22 +67,6 @@ const ClientSettings = (props: {
               <p className="flex items-center justify-center font-semibold text-gray-600 text-2xl">
                 設定
               </p>
-              {/* 音量調整 */}
-              <div className="flex mt-8">
-                <p className="text-center text-xl text-gray-600 ml-5">音量</p>
-
-                <input
-                  type="range"
-                  id="volume"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  style={{ fontFamily: "NicoMoji", color: "#7d7d7d" }}
-                  className="ml-12"
-                />
-              </div>
 
               {/* 表示切り替えボタン */}
               <div className="mt-10 flex items-center justify-center space-x-4">
