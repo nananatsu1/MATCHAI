@@ -359,13 +359,33 @@ export const getUserSettings = async (userId: string) => {
 
 // 画像のアップロード
 export const uploadUserIcon = async (userId: string, file: File) => {
-  const fileExt = file.name.split(".").pop();
-  const filePath = `${userId}/${Math.random()}.${fileExt}`;
+  try {
+    // ファイル名を整形（空白をアンダースコアに変換し、URLエンコード）
+    const fileExt = file.name.split(".").pop(); // 拡張子を取得
+    const fileName = `${Date.now()}.${fileExt}`; // タイムスタンプで一意な名前を生成
+    const filePath = `${userId}/${fileName}`; // ユーザーごとのフォルダに保存
 
-  // ファイルをアップロード
-  await supabase.storage
-    .from("icons")
-    .upload(filePath, file);
+    console.log(`Uploading file to: ${filePath}`);
 
-  return filePath;
+    // ファイルをSupabase Storageの「icons」バケットにアップロード
+    await supabase.storage
+      .from("icons")
+      .upload(filePath, file, {
+        upsert: true, // 同じファイル名があれば上書き
+      });
+
+    // アップロードしたファイルの公開URLを取得
+    const { data } = supabase.storage.from("icons").getPublicUrl(filePath);
+
+    if (!data?.publicUrl) {
+      console.error("Failed to get public URL");
+      return null;
+    }
+
+    console.log(`File uploaded successfully: ${data.publicUrl}`);
+    return data.publicUrl;
+  } catch (err) {
+    console.error("Unexpected error during upload:", err);
+    return null;
+  }
 };
