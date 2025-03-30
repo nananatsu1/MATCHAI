@@ -2,8 +2,8 @@ name: Reset Supabase Tables Daily
 
 on:
   schedule:
-    # 毎日12時と24時にトリガー
-    - cron: "0 12,0 * * *"  # UTC時間で12:00, 24:00
+    # 毎日0時にトリガー
+    - cron: "0 0 * * *"  # UTC時間で0:00
   workflow_dispatch:  # 手動トリガーを可能にするオプション
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
         run: npm install  # 依存関係をインストール
 
       - name: Run Supabase Reset Script
-        run: node resetSupabaseTables.js  # 作成した TypeScript スクリプトを実行
+        run: node resetSupabaseTables.ts  # 作成した TypeScript スクリプトを実行
         env:
           SUPABASE_URL: ${process.env.NEXT_PUBLIC_SUPABASE_URL}
           SUPABASE_ANON_KEY: ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}
