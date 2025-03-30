@@ -3,7 +3,7 @@ name: Reset Supabase Tables Daily
 on:
   schedule:
     # 毎日12時と24時にトリガー
-    - cron: '0 12,24 * * *'  # UTC時間で12:00, 24:00
+    - cron: "0 12,0 * * *"  # UTC時間で12:00, 24:00
   workflow_dispatch:  # 手動トリガーを可能にするオプション
 
 jobs:
