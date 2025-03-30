@@ -63,7 +63,7 @@ export const getUserById = async (id: string) => {
   }
 };
 
-export const updateUser = async (id: number, name: string) => {
+export const updateUser = async (id: string, name: string) => {
   const { data, error } = await supabase
     .from("user")
     .insert({ id: id, name: name })
