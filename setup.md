@@ -35,7 +35,7 @@ supabase init
 ### 4. ローカルSupabaseを起動
 
 ```bash
-supabase start -x 
+supabase start -x vector
 ```
 
 初回起動時には必要なDockerイメージがダウンロードされるため、時間がかかることがあります。
@@ -76,11 +76,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 2. **IPv6関連のエラー**:
    `supabase/config.toml`で`ip_version = "IPv4"`に設定します。
 
-### 特定のエラーと対処法
 
-- **"Not Acceptable" (406)エラー**: APIリクエストのヘッダーを確認します。
-- **"Bad Request" (400)エラー**: テーブルスキーマを確認し、必須フィールドが含まれているか確認します。
-- **"Conflict" (409)エラー**: 同時更新の競合の可能性があります。エラーハンドリングを追加してください。
+### _追記_:
+現在、realtime部分が初期だと設定されていません！GUI上ですべてのテーブルのリアルタイムをonに設定してください！
+
 
 ## リンク
 

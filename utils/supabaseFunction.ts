@@ -48,7 +48,7 @@ export const getUserById = async (id: string) => {
     .from("user")
     .select("*")
     .eq("id", id)
-    .single();  // 単一のレコードのみ取得
+    .maybeSingle();  // single()からmaybeSingle()に変更
 
   // エラーが発生した場合
   if (error) {
@@ -69,14 +69,14 @@ export const updateUser = async (id: string, name: string) => {
     .update({ name: name })
     .eq("id", id)
     .select()
-    .single();
+    .maybeSingle();  // single()からmaybeSingle()に変更
 
   if (error) {
     console.error("Error updating user:", error.message);
     throw error;
   }
 
-  return data.id;
+  return data?.id;  // dataがnullの可能性があるので、optional chainingを使用
 };
 
 export const addUser = async (name: string) => {
@@ -84,14 +84,14 @@ export const addUser = async (name: string) => {
     .from("user")
     .insert({ name: name })
     .select()
-    .single();
+    .maybeSingle();  // single()からmaybeSingle()に変更
 
   if (error) {
     console.error("Error adding user:", error.message);
     throw error;
   }
 
-  return data.id;
+  return data?.id;  // dataがnullの可能性があるので、optional chainingを使用
 };
 
 export const addRoom = async (pass: number, name: string) => {
