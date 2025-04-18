@@ -66,7 +66,8 @@ export const getUserById = async (id: string) => {
 export const updateUser = async (id: string, name: string) => {
   const { data, error } = await supabase
     .from("user")
-    .insert({ id: id, name: name })
+    .update({ name: name })
+    .eq("id", id)
     .select()
     .single();
 
@@ -441,7 +442,7 @@ export const getUserSettings = async (userId: string) => {
       .from("user")
       .select("name, icon")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
 
     if (error){
       console.error("Error fetching user settings:", error.message);
